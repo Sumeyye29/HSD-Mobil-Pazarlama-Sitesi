@@ -88,7 +88,7 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .start-button, .download-button {
+        .start-button, .download-button, .leaderboard-button, .play-again-button {
             padding: 15px 30px;
             font-size: 1.2em;
             background: linear-gradient(45deg, #ea2828, #e9edec);
@@ -102,7 +102,21 @@
             display: inline-block;
         }
 
-        .start-button:hover, .download-button:hover {
+        .leaderboard-button {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            font-weight: bold;
+        }
+
+        .play-again-button {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            font-weight: bold;
+            font-size: 1.3em;
+            padding: 18px 35px;
+        }
+
+        .start-button:hover, .download-button:hover, .leaderboard-button:hover, .play-again-button:hover {
             transform: scale(1.1);
         }
 
@@ -132,6 +146,14 @@
             font-size: 1.5em;
         }
 
+        .game-ui-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: none !important;
+        }
+
         .timer {
             background: rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
@@ -147,25 +169,68 @@
             backdrop-filter: blur(10px);
         }
 
-        .leaderboard {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        /* Leaderboard Modal Styles */
+        .leaderboard-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
-            padding: 20px;
-            min-width: 280px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 50;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .leaderboard-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
 
         .leaderboard h3 {
-            text-align: center;
-            margin-bottom: 15px;
             color: #ffd700;
-            font-size: 1.3em;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            font-size: 1.5em;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            margin: 0;
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         .top-three {
@@ -175,43 +240,53 @@
         .top-player {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-            padding: 8px 12px;
+            margin-bottom: 15px;
+            padding: 12px 15px;
             border-radius: 15px;
             position: relative;
             overflow: hidden;
+            animation: slideInLeft 0.5s ease-out;
         }
 
         .top-player.first {
             background: linear-gradient(135deg, #ffd700, #ffed4e);
             color: #333;
+            animation-delay: 0.1s;
         }
 
         .top-player.second {
             background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
             color: #333;
+            animation-delay: 0.2s;
         }
 
         .top-player.third {
             background: linear-gradient(135deg, #cd7f32, #e6a85c);
             color: white;
+            animation-delay: 0.3s;
+        }
+
+        .top-player.current-user {
+            border: 3px solid #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .medal {
-            font-size: 1.5em;
-            margin-right: 10px;
+            font-size: 1.8em;
+            margin-right: 12px;
             animation: sparkle 2s ease-in-out infinite;
         }
 
         .player-name {
             flex: 1;
             font-weight: bold;
-            font-size: 1em;
+            font-size: 1.1em;
         }
 
         .player-score {
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         .other-players {
@@ -222,17 +297,41 @@
         .regular-player {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            padding: 6px 10px;
-            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.1);
-            font-size: 0.9em;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .regular-player:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .regular-player.current-user {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.3));
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .player-rank {
-            min-width: 25px;
+            min-width: 30px;
             font-weight: bold;
             color: #ccc;
+        }
+
+        .current-user-indicator {
+            background: #00ff88;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
         }
 
         .logo {
@@ -286,19 +385,6 @@
             justify-content: center;
         }
 
-        .thank-you-message {
-            background: rgba(34, 197, 94, 0.2);
-            border: 2px solid rgba(34, 197, 94, 0.5);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            color: #22c55e;
-            font-size: 1.1em;
-            max-width: 500px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-        }
-
         @keyframes glow {
             from { text-shadow: 0 0 20px #00d4ff; }
     to { text-shadow: 0 0 35px #7f5af0; }
@@ -306,7 +392,7 @@
 
         @keyframes sparkle {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.2) rotate(10deg); }
         }
 
         @keyframes float {
@@ -319,6 +405,55 @@
             100% { transform: scale(2) rotate(360deg); opacity: 0; }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            }
+            50% { 
+                transform: scale(1.02);
+                box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+            }
+        }
+
         @media (max-width: 768px) {
             .start-screen h1 { font-size: 2em; }
             .start-screen p { font-size: 1em; }
@@ -327,19 +462,31 @@
         height: 70px;
         font-size: 12px; }
             .download-links { flex-direction: column; align-items: center; }
-            .leaderboard {
-                position: relative;
-                margin: 20px auto;
-                width: 90%;
-                max-width: 280px;
-            }
             .username-input {
                 min-width: 150px;
                 font-size: 1em;
             }
-            .warning-message, .thank-you-message {
+            .warning-message {
                 max-width: 90%;
                 font-size: 0.9em;
+            }
+            
+            .leaderboard-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .leaderboard h3 {
+                font-size: 1.3em;
+            }
+            
+            .medal {
+                font-size: 1.5em;
+                margin-right: 8px;
+            }
+            
+            .player-name, .player-score {
+                font-size: 0.95em;
             }
         }
     </style>
@@ -354,22 +501,17 @@
                 <input type="text" id="usernameInput" class="username-input" placeholder="Kullanıcı adınızı girin..." maxlength="15">
             </div>
             
-            <div id="warningMessage" class="warning-message" style="display: none;">
-                ⚠️ Bu kullanıcı adı ile daha önce oynadınız! Her kullanıcı sadece bir kez oynayabilir.
-            </div>
-            
             <button class="start-button" id="startButton" onclick="startGame()">Oyuna Başla!</button>
-
-            <div class="leaderboard" id="startLeaderboard">
-                <h3>🏆 Skor Tablosu</h3>
-                <div class="top-three" id="topThreeStart"></div>
-                <div class="other-players" id="otherPlayersStart"></div>
-            </div>
+            <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Skor Tablosu</button>
         </div>
 
         <div class="game-ui" id="gameUI" style="display: none;">
             <div class="timer">⏰ Süre: <span id="timer">15</span></div>
             <div class="score">🏆 Toplanan: <span id="score">0</span></div>
+        </div>
+
+        <div class="game-ui-right" id="gameUIRight" style="display: none;">
+            <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Skor Tablosu</button>
         </div>
 
         <div class="end-screen" id="endScreen" style="display: none;">
@@ -380,18 +522,21 @@
             <p>Sakarya'dan Marmara'ya, Ankara'dan İzmir'e kadar tüm HSD ailesi artık elinizin altında!</p>
             
             <div class="download-links">
+                <button class="play-again-button" onclick="resetGame()">🎮 Tekrar Oyna</button>
                 <button class="download-button" onclick="exploreApp()">🚀 Uygulamayı Keşfetmek İster Misin?</button>
+                <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Skor Tablosu</button>
             </div>
-            
-            <div class="thank-you-message">
-                🙏 Oyunu oynadığınız için teşekkürler! <br>
-                Her kullanıcı sadece bir kez oynayabilir.
-            </div>
+        </div>
 
-            <div class="leaderboard" id="endLeaderboard">
-                <h3>🏆 Skor Tablosu</h3>
-                <div class="top-three" id="topThreeEnd"></div>
-                <div class="other-players" id="otherPlayersEnd"></div>
+        <!-- Leaderboard Modal -->
+        <div class="leaderboard-modal" id="leaderboardModal">
+            <div class="leaderboard-content">
+                <div class="leaderboard-header">
+                    <h3>🏆 Skor Tablosu</h3>
+                    <button class="close-button" onclick="hideLeaderboard()">×</button>
+                </div>
+                <div class="top-three" id="topThreeModal"></div>
+                <div class="other-players" id="otherPlayersModal"></div>
             </div>
         </div>
     </div>
@@ -425,15 +570,12 @@
         let spawnedCities = new Set();
         let currentPlayer = '';
         let leaderboard = [];
-        let playedUsers = new Set(); // Oynamış kullanıcıları takip etmek için
+        let playedUsers = new Set();
 
         // Veri yükleme fonksiyonları
         function loadData() {
-            // Skor tablosunu yükle
-            const savedLeaderboard = localStorage.getItem('hsdGameLeaderboard');
-            if (savedLeaderboard) {
-                leaderboard = JSON.parse(savedLeaderboard);
-            } else {
+            const savedLeaderboard = JSON.parse(localStorage.getItem('hsdGameLeaderboard') || '[]');
+            if (savedLeaderboard.length === 0) {
                 leaderboard = [
                     { name: 'HSD_Oyuncu', score: 12 },
                     { name: 'Logo_Master', score: 10 },
@@ -441,15 +583,12 @@
                     { name: 'Toplayıcı', score: 6 },
                     { name: 'Hızlı_El', score: 4 }
                 ];
+            } else {
+                leaderboard = savedLeaderboard;
             }
             
-            // Oynamış kullanıcıları yükle
-            const savedPlayedUsers = localStorage.getItem('hsdGamePlayedUsers');
-            if (savedPlayedUsers) {
-                playedUsers = new Set(JSON.parse(savedPlayedUsers));
-            }
-            
-            updateAllLeaderboards();
+            const savedPlayedUsers = JSON.parse(localStorage.getItem('hsdGamePlayedUsers') || '[]');
+            playedUsers = new Set(savedPlayedUsers);
         }
 
         // Veri kaydetme fonksiyonları
@@ -458,28 +597,32 @@
             localStorage.setItem('hsdGamePlayedUsers', JSON.stringify([...playedUsers]));
         }
 
-        // Kullanıcı adı kontrolü
+        // Kullanıcı adı kontrolü - minimum karakter sınırı kaldırıldı
         function checkUsername() {
             const username = document.getElementById('usernameInput').value.trim();
             const startButton = document.getElementById('startButton');
             const warningMessage = document.getElementById('warningMessage');
             
-            if (username.length >= 3) {
+            if (username.length > 0) {
                 if (playedUsers.has(username.toLowerCase())) {
-                    // Daha önce oynayan kullanıcı
                     startButton.disabled = true;
                     startButton.style.opacity = '0.6';
-                    warningMessage.style.display = 'block';
+                    if (warningMessage) {
+                        warningMessage.style.display = 'block';
+                    }
                 } else {
-                    // Yeni kullanıcı
                     startButton.disabled = false;
                     startButton.style.opacity = '1';
-                    warningMessage.style.display = 'none';
+                    if (warningMessage) {
+                        warningMessage.style.display = 'none';
+                    }
                 }
             } else {
                 startButton.disabled = true;
                 startButton.style.opacity = '0.6';
-                warningMessage.style.display = 'none';
+                if (warningMessage) {
+                    warningMessage.style.display = 'none';
+                }
             }
         }
 
@@ -492,11 +635,12 @@
         });
 
         // Skor tablosunu güncelle
-        function updateLeaderboard(containerId) {
-            const topThree = document.getElementById('topThree' + containerId);
-            const otherPlayers = document.getElementById('otherPlayers' + containerId);
+        function updateLeaderboard() {
+            const topThree = document.getElementById('topThreeModal');
+            const otherPlayers = document.getElementById('otherPlayersModal');
             
-            const sortedScores = [...leaderboard].sort((a, b) => b.score - a.score);
+            // Sadece ilk 10 kişiyi göster
+            const sortedScores = [...leaderboard].sort((a, b) => b.score - a.score).slice(0, 10);
             
             topThree.innerHTML = '';
             const medals = ['🥇', '🥈', '🥉'];
@@ -505,11 +649,24 @@
             for (let i = 0; i < Math.min(3, sortedScores.length); i++) {
                 const player = sortedScores[i];
                 const playerDiv = document.createElement('div');
-                playerDiv.className = `top-player ${classes[i]}`;
+                let playerClass = `top-player ${classes[i]}`;
+                
+                // Mevcut oyuncunun en son oynadığı skorunu kontrol et
+                const lastPlayerScore = getCurrentPlayerLastScore();
+                const isCurrentPlayerScore = lastPlayerScore && 
+                    player.name.toLowerCase() === currentPlayer.toLowerCase() && 
+                    player.score === lastPlayerScore.score;
+                
+                if (isCurrentPlayerScore) {
+                    playerClass += ' current-user';
+                }
+                
+                playerDiv.className = playerClass;
                 playerDiv.innerHTML = `
                     <span class="medal">${medals[i]}</span>
                     <span class="player-name">${player.name}</span>
                     <span class="player-score">${player.score}</span>
+                    ${isCurrentPlayerScore ? '<span class="current-user-indicator">SEN</span>' : ''}
                 `;
                 topThree.appendChild(playerDiv);
             }
@@ -518,25 +675,76 @@
             for (let i = 3; i < Math.min(10, sortedScores.length); i++) {
                 const player = sortedScores[i];
                 const playerDiv = document.createElement('div');
-                playerDiv.className = 'regular-player';
+                let playerClass = 'regular-player';
+                
+                // Mevcut oyuncunun en son oynadığı skorunu kontrol et
+                const lastPlayerScore = getCurrentPlayerLastScore();
+                const isCurrentPlayerScore = lastPlayerScore && 
+                    player.name.toLowerCase() === currentPlayer.toLowerCase() && 
+                    player.score === lastPlayerScore.score;
+                
+                if (isCurrentPlayerScore) {
+                    playerClass += ' current-user';
+                }
+                
+                playerDiv.className = playerClass;
+                playerDiv.style.animationDelay = `${(i - 3) * 0.1}s`;
                 playerDiv.innerHTML = `
                     <span class="player-rank">${i + 1}.</span>
                     <span class="player-name">${player.name}</span>
                     <span class="player-score">${player.score}</span>
+                    ${isCurrentPlayerScore ? '<span class="current-user-indicator">SEN</span>' : ''}
                 `;
                 otherPlayers.appendChild(playerDiv);
             }
         }
 
-        function updateAllLeaderboards() {
-            updateLeaderboard('Start');
-            updateLeaderboard('End');
+        // Mevcut oyuncunun en son skorunu bul
+        function getCurrentPlayerLastScore() {
+            if (!currentPlayer) return null;
+            
+            // Oyuncunun skorlarını bul ve en son ekleneni al
+            const playerScores = leaderboard.filter(entry => 
+                entry.name.toLowerCase() === currentPlayer.toLowerCase()
+            );
+            
+            if (playerScores.length === 0) return null;
+            
+            // En son eklenen skoru döndür (son oyun)
+            return playerScores[playerScores.length - 1];
         }
+
+        function showLeaderboard() {
+            updateLeaderboard();
+            const modal = document.getElementById('leaderboardModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLeaderboard() {
+            const modal = document.getElementById('leaderboardModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Modal dışına tıklanınca kapat
+        document.getElementById('leaderboardModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLeaderboard();
+            }
+        });
+
+        // ESC tuşu ile modal'ı kapat
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLeaderboard();
+            }
+        });
 
         function startGame() {
             const username = document.getElementById('usernameInput').value.trim();
-            if (username.length < 3) {
-                alert('Lütfen en az 3 karakterlik bir kullanıcı adı girin!');
+            if (username.length === 0) {
+                alert('Lütfen bir kullanıcı adı girin!');
                 return;
             }
             
@@ -549,6 +757,7 @@
             
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameUI').style.display = 'block';
+            document.getElementById('gameUIRight').style.display = 'block';
             document.getElementById('endScreen').style.display = 'none';
             
             gameActive = true;
@@ -572,6 +781,27 @@
             for (let i = 0; i < 3; i++) {
                 setTimeout(spawnLogo, i * 100);
             }
+        }
+
+        function resetGame() {
+            // Önceki oyun verilerini temizle
+            clearInterval(gameInterval);
+            clearInterval(logoSpawnInterval);
+            
+            const remainingLogos = document.querySelectorAll('.logo');
+            remainingLogos.forEach(logo => logo.remove());
+            
+            // Oyun ekranlarını gizle ve başlangıç ekranını göster
+            document.getElementById('endScreen').style.display = 'none';
+            document.getElementById('gameUI').style.display = 'none';
+            document.getElementById('gameUIRight').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+            
+            // Kullanıcı adını koruyarak input'a yaz
+            document.getElementById('usernameInput').value = currentPlayer;
+            
+            // Buton durumunu kontrol et (kullanıcı adı zaten var ve geçerli)
+            checkUsername();
         }
 
         function spawnLogo() {
@@ -669,20 +899,19 @@
             const remainingLogos = document.querySelectorAll('.logo');
             remainingLogos.forEach(logo => logo.remove());
             
-            // Kullanıcıyı oynamış listesine ekle
-            playedUsers.add(currentPlayer.toLowerCase());
-            
             // Skoru kaydet
             leaderboard.push({ name: currentPlayer, score: score });
             
-            // Skor tablosunu sınırla (en fazla 15 kişi)
+            // Skor tablosunu sınırla (en fazla 50 kişi kaydet ama sadece 10 tanesini göster)
             leaderboard.sort((a, b) => b.score - a.score);
-            leaderboard = leaderboard.slice(0, 15);
+            if (leaderboard.length > 50) {
+                leaderboard = leaderboard.slice(0, 50);
+            }
             
             saveData();
-            updateAllLeaderboards();
             
             document.getElementById('gameUI').style.display = 'none';
+            document.getElementById('gameUIRight').style.display = 'none';
             document.getElementById('endScreen').style.display = 'flex';
             document.getElementById('finalScore').textContent = score;
         }
@@ -700,7 +929,6 @@
         // Sayfa yüklendiğinde
         window.addEventListener('load', () => {
             loadData();
-            checkUsername();
         });
     </script>
 </body>
