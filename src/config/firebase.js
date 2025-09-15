@@ -11,7 +11,7 @@ const envVars = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Environment değişkenlerini logla
+// Environment değişkenlerini logla (opsiyonel)
 console.log('Firebase Config Check:', {
   apiKey: envVars.apiKey ? '✓' : '✗',
   authDomain: envVars.authDomain ? '✓' : '✗',
@@ -20,8 +20,9 @@ console.log('Firebase Config Check:', {
 
 // Eksik config kontrolü
 const missingVars = Object.entries(envVars)
-  .filter(([_, value]) => !value)
+  .filter(([, value]) => !value)  // sadece value lazım
   .map(([key]) => key);
+
 
 if (missingVars.length > 0) {
   console.error(`Missing Firebase config variables: ${missingVars.join(', ')}`);
