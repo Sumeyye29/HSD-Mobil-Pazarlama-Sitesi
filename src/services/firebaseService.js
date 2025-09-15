@@ -1,10 +1,14 @@
 import { db } from '../config/firebase';
-import { collection, addDoc, getDocs, query, orderBy, limit, where, getCountFromServer, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  collection, addDoc, getDocs, query, orderBy, limit, where,
+  getCountFromServer, doc, getDoc, setDoc
+} from 'firebase/firestore';
 
 const SCORES_COLLECTION = 'scores';
 const GAME_STATUS_COLLECTION = 'gameStatus';
 const ADMIN_USERNAME = 'abirollupnerde0'; // Admin kullanıcı adı
 
+// Skor kaydet
 export const saveScore = async (userName, score) => {
   if (!userName || typeof score !== 'number' || score <= 0) {
     throw new Error('Geçersiz kullanıcı adı veya skor');
@@ -12,14 +16,11 @@ export const saveScore = async (userName, score) => {
 
   try {
     const normalizedName = userName.trim();
-    
-    // Her oyunu kaydet
     const docRef = await addDoc(collection(db, SCORES_COLLECTION), {
       userName: normalizedName,
       score: score,
       createdAt: new Date().toISOString()
     });
-    
     console.log('Skor başarıyla kaydedildi:', docRef.id);
     return docRef.id;
   } catch (error) {
@@ -28,24 +29,26 @@ export const saveScore = async (userName, score) => {
   }
 };
 
+// En yüksek skorları getir
 export const getTopScores = async (limitCount = 10) => {
   try {
-    // Tüm skorları al
     const querySnapshot = await getDocs(
       query(
         collection(db, SCORES_COLLECTION),
-        orderBy('score', 'desc')
+        orderBy('score', 'desc'),
+        limit(limitCount) // sadece Firestore limit
       )
     );
 
-    // Kullanıcı bazında en yüksek skorları bul
     const userHighScores = {};
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (!userHighScores[data.userName] || 
-          data.score > userHighScores[data.userName].score) {
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (
+        !userHighScores[data.userName] ||
+        data.score > userHighScores[data.userName].score
+      ) {
         userHighScores[data.userName] = {
-          id: doc.id,
+          id: docSnap.id,
           userName: data.userName,
           score: data.score,
           createdAt: data.createdAt
@@ -53,10 +56,7 @@ export const getTopScores = async (limitCount = 10) => {
       }
     });
 
-    // En yüksek skorları sırala ve limitle
-    const scores = Object.values(userHighScores)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limitCount);
+    const scores = Object.values(userHighScores).sort((a, b) => b.score - a.score);
 
     console.log('Skorlar başarıyla alındı:', scores.length);
     return scores;
@@ -66,6 +66,7 @@ export const getTopScores = async (limitCount = 10) => {
   }
 };
 
+// Kullanıcının oynama sayısı
 export const getPlayCountByUserName = async (userName) => {
   try {
     const normalizedName = (userName || '').trim();
@@ -76,13 +77,11 @@ export const getPlayCountByUserName = async (userName) => {
       where('userName', '==', normalizedName)
     );
 
-    // Prefer sunucu tarafı sayaç (daha performanslı)
     const snapshot = await getCountFromServer(scoresQuery);
     return snapshot.data().count || 0;
   } catch (error) {
     console.error('Kullanıcı oyun sayısı alınamadı:', error);
     try {
-      // Yedek olarak döküman sayımı
       const qSnap = await getDocs(
         query(
           collection(db, SCORES_COLLECTION),
@@ -97,25 +96,26 @@ export const getPlayCountByUserName = async (userName) => {
   }
 };
 
-// Yeni admin ve oyun durumu fonksiyonları
+// Admin kontrolü
 export const isAdmin = (userName) => {
   return userName.toLowerCase() === ADMIN_USERNAME;
 };
 
+// Oyun durumunu getir
 export const getGameStatus = async () => {
   try {
     const statusDoc = await getDoc(doc(db, GAME_STATUS_COLLECTION, 'status'));
     if (statusDoc.exists()) {
       return statusDoc.data().isActive;
     }
-    // Varsayılan olarak oyun aktif
-    return true;
+    return true; // Varsayılan aktif
   } catch (error) {
     console.error('Oyun durumu alınamadı:', error);
-    return true; // Hata durumunda varsayılan olarak aktif
+    return true;
   }
 };
 
+// Oyun durumunu ayarla
 export const setGameStatus = async (isActive) => {
   try {
     await setDoc(doc(db, GAME_STATUS_COLLECTION, 'status'), {
