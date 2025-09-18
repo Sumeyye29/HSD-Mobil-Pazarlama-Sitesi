@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSD Logo Toplama Oyunu</title>
     <style>
-        * {
+       * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -13,10 +13,15 @@
 
         body {
              font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #0d1421, #1a237e, #2e2e54, #000000);
+    /* BURAYA ARKA PLAN RESMİNİZİ EKLEYEBİLİRSİNİZ - ÖRNEĞİN: */
+    /* background-image: url('your-background-image.jpg'); */
+    /* background-size: cover; */
+    /* background-position: center; */
+    /* background-attachment: fixed; */
     height: 100vh;
     overflow: hidden;
-    color: #e0e0e0;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,7 +40,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(13, 20, 33, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,17 +54,19 @@
         .start-screen h1 {
             font-size: 2.2em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #f70b0b, #7b7e7e);
+            background: linear-gradient(45deg, #1a237e, #9e9e9e, #3f51b5, #6a1b9a);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: glow 2s ease-in-out infinite alternate;
+            animation: gradientShift 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
         }
 
         .start-screen p {
             font-size: 1.2em;
             margin-bottom: 30px;
             max-width: 600px;
+            color: #c5cae9;
         }
 
         .username-input-container {
@@ -68,12 +76,12 @@
         .username-input {
             padding: 12px 20px;
             font-size: 1.1em;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(26, 35, 126, 0.6);
             border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(158, 158, 158, 0.1);
             color: white;
             text-align: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             outline: none;
             transition: all 0.3s ease;
             min-width: 200px;
@@ -84,40 +92,58 @@
         }
 
         .username-input:focus {
-            border-color: rgba(255, 255, 255, 0.7);
-            background: rgba(255, 255, 255, 0.2);
+            border-color: #9e9e9e;
+            background: rgba(158, 158, 158, 0.15);
+            box-shadow: 0 0 20px rgba(158, 158, 158, 0.4);
         }
 
         .start-button, .download-button, .leaderboard-button, .play-again-button {
             padding: 15px 30px;
             font-size: 1.2em;
-            background: linear-gradient(45deg, #ea2828, #e9edec);
+            background: linear-gradient(45deg, #1a237e, #3f51b5, #6a1b9a);
+            background-size: 200% 200%;
             border: none;
             border-radius: 50px;
             color: white;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             margin: 10px;
             text-decoration: none;
             display: inline-block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(26, 35, 126, 0.4);
         }
 
-        .leaderboard-button {
+         .leaderboard-button {
             background: linear-gradient(45deg, #ffd700, #ffed4e);
             color: #333;
             font-weight: bold;
         }
 
+
         .play-again-button {
-            background: linear-gradient(45deg, #22c55e, #16a34a);
+            background: linear-gradient(45deg, #1a237e, #6a1b9a, #000000);
+            background-size: 200% 200%;
             color: white;
             font-weight: bold;
             font-size: 1.3em;
             padding: 18px 35px;
+            box-shadow: 0 8px 25px rgba(106, 27, 154, 0.5);
         }
 
         .start-button:hover, .download-button:hover, .leaderboard-button:hover, .play-again-button:hover {
             transform: scale(1.1);
+            background-position: 100% 0;
+            box-shadow: 0 8px 30px rgba(26, 35, 126, 0.6);
+        }
+
+        .leaderboard-button:hover {
+            box-shadow: 0 8px 30px rgba(158, 158, 158, 0.6);
+        }
+
+        .play-again-button:hover {
+            box-shadow: 0 10px 35px rgba(106, 27, 154, 0.7);
         }
 
         .start-button:disabled {
@@ -132,7 +158,7 @@
             font-size: 1em;
             max-width: 400px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             white-space: pre-line;
         }
 
@@ -153,21 +179,26 @@
         }
 
         .timer {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.3), rgba(63, 81, 181, 0.3));
             padding: 10px 20px;
             border-radius: 25px;
             margin-bottom: 10px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(26, 35, 126, 0.4);
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
         }
 
         .score {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(106, 27, 154, 0.3), rgba(158, 158, 158, 0.2));
             padding: 10px 20px;
             border-radius: 25px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(106, 27, 154, 0.4);
+            box-shadow: 0 5px 15px rgba(106, 27, 154, 0.2);
         }
 
         /* Leaderboard Modal Styles */
+                /* Leaderboard Modal Styles */
         .leaderboard-modal {
             position: fixed;
             top: 0;
@@ -212,8 +243,8 @@
         }
 
         .close-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: rgba(26, 35, 126, 0.3);
+            border: 1px solid rgba(26, 35, 126, 0.5);
             color: white;
             font-size: 1.5em;
             width: 40px;
@@ -227,8 +258,9 @@
         }
 
         .close-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(26, 35, 126, 0.5);
             transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.4);
         }
 
         .top-three {
@@ -265,8 +297,8 @@
         }
 
         .top-player.current-user {
-            border: 3px solid #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            border: 3px solid #1a237e;
+            box-shadow: 0 0 20px rgba(26, 35, 126, 0.6);
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -288,7 +320,7 @@
         }
 
         .other-players {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(26, 35, 126, 0.3);
             padding-top: 15px;
         }
 
@@ -298,32 +330,34 @@
             margin-bottom: 10px;
             padding: 10px 12px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(26, 35, 126, 0.2);
             font-size: 1em;
             transition: all 0.3s ease;
             animation: slideInRight 0.5s ease-out;
+            border: 1px solid rgba(26, 35, 126, 0.1);
         }
 
         .regular-player:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(26, 35, 126, 0.3);
             transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(26, 35, 126, 0.3);
         }
 
         .regular-player.current-user {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.3));
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            background: linear-gradient(135deg, rgba(158, 158, 158, 0.3), rgba(224, 224, 224, 0.2));
+            border: 2px solid #9e9e9e;
+            box-shadow: 0 0 15px rgba(158, 158, 158, 0.4);
             animation: pulse 2s ease-in-out infinite;
         }
 
         .player-rank {
             min-width: 30px;
             font-weight: bold;
-            color: #ccc;
+            color: #c5cae9;
         }
 
         .current-user-indicator {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #1a237e, #3f51b5);
             color: white;
             padding: 8px 15px;
             border-radius: 20px;
@@ -332,13 +366,13 @@
             margin-left: 10px;
             text-align: center;
             line-height: 1.4;
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.4);
             transition: all 0.3s ease;
         }
 
         .current-user-indicator:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.5);
         }
         
         .remaining-tries-button {
@@ -362,7 +396,7 @@
         .warning-message.remaining-tries {
             background: transparent;
             border: none;
-            color: #00ff88;
+            color: #9e9e9e;
             font-size: 1.1em;
             text-align: center;
         }
@@ -371,30 +405,40 @@
             position: absolute;
             width: 80px;
             height: 80px;
-            background: white;
-            border-radius: 15px;
+            background: linear-gradient(135deg, #1a237e, #3f51b5, #6a1b9a, #000000);
+            background-size: 300% 300%;
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             font-size: 14px;
             text-align: center;
-            color: #333;
-            text-shadow: none;
-            animation: float 2s ease-in-out infinite;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            animation: float 2s ease-in-out infinite, gradientShift 4s ease-in-out infinite;
             z-index: 10;
-            filter: drop-shadow(0 0 12px rgba(255, 0, 0, 0.8));
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            border: 3px solid rgba(158, 158, 158, 0.4);
+            box-shadow: 
+                0 0 25px rgba(26, 35, 126, 0.6),
+                0 0 50px rgba(106, 27, 154, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
 
         .logo:hover {
-            transform: scale(1.15);
+            transform: scale(1.2) rotate(5deg);
+            box-shadow: 
+                0 0 35px rgba(26, 35, 126, 0.8),
+                0 0 70px rgba(106, 27, 154, 0.6),
+                inset 0 0 30px rgba(255, 255, 255, 0.2);
+            border-color: rgba(158, 158, 158, 0.7);
         }
 
         .logo.collected {
-            animation: collect 0.5s ease-out;
+            animation: collect 0.8s ease-out;
             pointer-events: none;
         }
 
@@ -404,18 +448,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(13, 20, 33, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
         .countdown-number {
             font-size: 8em;
-            color: white;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            color: #9e9e9e;
+            text-shadow: 0 0 30px rgba(158, 158, 158, 0.8);
             animation: countdownPulse 1s ease-in-out;
             opacity: 0;
         }
@@ -438,7 +482,12 @@
         .end-screen h2 {
             font-size: 2.5em;
             margin-bottom: 20px;
-            color: #e22e2e;
+            background: linear-gradient(45deg, #1a237e, #3f51b5, #6a1b9a);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
         }
 
         .end-screen p {
@@ -446,6 +495,7 @@
             margin-bottom: 15px;
             max-width: 700px;
             line-height: 1.6;
+            color: #c5cae9;
         }
 
         .download-links {
@@ -457,8 +507,14 @@
         }
 
         @keyframes glow {
-            from { text-shadow: 0 0 20px #00d4ff; }
-    to { text-shadow: 0 0 35px #7f5af0; }
+            from { text-shadow: 0 0 20px #9e9e9e; }
+            to { text-shadow: 0 0 35px #1a237e; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         @keyframes sparkle {
@@ -671,7 +727,7 @@
             
             <div class="download-links">
                 <button class="play-again-button" onclick="resetGame()">🎮 Tekrar Oyna</button>
-                <button class="download-button" onclick="exploreApp()">🚀 Uygulamayı Keşfetmek İster Misin?</button>
+                <button class="download-button" onclick="exploreApp()">🚀 Hadi Gel, Birlikte Göz Atalım!</button>
                 <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Skor Tablosu</button>
             </div>
         </div>
@@ -1110,88 +1166,179 @@
             startGame();
         }
 
-        function spawnLogo() {
-            if (!gameActive) return;
-            
-            const availableLogos = hsdLogos.filter(logo => 
-                !spawnedCities.has(logo.name)
-            );
-            
-            if (availableLogos.length === 0) return;
-            
-            const logoData = availableLogos[Math.floor(Math.random() * availableLogos.length)];
-            spawnedCities.add(logoData.name);
-            
-            const logo = document.createElement('div');
-            logo.className = 'logo';
-            logo.textContent = logoData.name;
-            logo.dataset.city = logoData.name;
-            
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 150) + 100;
-            
-            logo.style.left = x + 'px';
-            logo.style.top = y + 'px';
-            
-            const speed = logoData.speed;
-            const directionX = (Math.random() - 0.5) * 4;
-            const directionY = (Math.random() - 0.5) * 4;
-            
-            logo.onclick = () => collectLogo(logo);
-            
-            document.getElementById('gameContainer').appendChild(logo);
-            
-            let posX = x;
-            let posY = y;
-            
-            const moveInterval = setInterval(() => {
-                if (!gameActive || logo.classList.contains('collected')) {
-                    clearInterval(moveInterval);
-                    return;
-                }
-                
-                posX += directionX * speed;
-                posY += directionY * speed;
-                
-                if (posX < 0 || posX > window.innerWidth - 100) {
-                    posX = Math.max(0, Math.min(window.innerWidth - 100, posX));
-                }
-                if (posY < 100 || posY > window.innerHeight - 100) {
-                    posY = Math.max(100, Math.min(window.innerHeight - 100, posY));
-                }
-                
-                logo.style.left = posX + 'px';
-                logo.style.top = posY + 'px';
-            }, 50);
-            
-            setTimeout(() => {
-                if (logo.parentNode && !logo.classList.contains('collected')) {
-                    logo.remove();
-                    spawnedCities.delete(logoData.name);
-                }
-                clearInterval(moveInterval);
-            }, 8000);
-        }
+       function spawnLogo() {
+    const maxActiveLogos = 8;
+    if (document.querySelectorAll('.logo').length >= maxActiveLogos) return;
+    if (!gameActive) return;
 
-        function collectLogo(logo) {
-            if (!gameActive || logo.classList.contains('collected')) return;
-            
-            logo.classList.add('collected');
-            score++;
-            updateUI();
-            
-            const cityName = logo.dataset.city;
-            if (cityName) {
-                spawnedCities.delete(cityName);
+    const availableLogos = hsdLogos.filter(logo => !spawnedCities.has(logo.name));
+
+    if (availableLogos.length === 0) return;
+
+    const logoData = availableLogos[Math.floor(Math.random() * availableLogos.length)];
+    const logo = document.createElement('div');
+    logo.className = 'logo';
+    logo.textContent = logoData.name;
+    logo.dataset.city = logoData.name;
+
+    // Yeni logo için çakışmayan bir pozisyon bulana kadar döngü
+    let x, y;
+    let isColliding = true;
+    let attempts = 0;
+    const logoWidth = 100;
+    const logoHeight = 100;
+    const minY = 100;
+    const maxY = window.innerHeight - logoHeight - 100;
+
+    while (isColliding && attempts < 50) {
+        isColliding = false;
+        x = Math.random() * (window.innerWidth - logoWidth);
+        y = Math.random() * (maxY - minY) + minY;
+
+        const newLogoRect = { left: x, top: y, right: x + logoWidth, bottom: y + logoHeight };
+
+        const existingLogos = document.querySelectorAll('.logo:not(.collected)');
+        for (const other of existingLogos) {
+            const otherRect = other.getBoundingClientRect();
+
+            if (
+                newLogoRect.left < otherRect.right &&
+                newLogoRect.right > otherRect.left &&
+                newLogoRect.top < otherRect.bottom &&
+                newLogoRect.bottom > otherRect.top
+            ) {
+                isColliding = true;
+                break;
             }
-            
-            setTimeout(() => {
-                if (logo.parentNode) {
-                    logo.remove();
-                }
-            }, 500);
+        }
+        attempts++;
+    }
+
+    if (isColliding) {
+        console.warn('Yeni logo için boş yer bulunamadı, oluşturma iptal edildi.');
+        return;
+    }
+
+    spawnedCities.add(logoData.name);
+    logo.style.left = x + 'px';
+    logo.style.top = y + 'px';
+    logo.onclick = () => collectLogo(logo);
+    document.getElementById('gameContainer').appendChild(logo);
+
+    startLogoMovement(logo, logoData.speed);
+
+    // Otomatik silme için 4 saniyelik zamanlayıcı
+    logo.removeTimer = setTimeout(() => {
+        collectLogo(logo, false); // Tıklama yok, animasyon sınıfı eklenmeyecek
+    }, 4000);
+}
+
+// ✔️ Çakışma önleyici ve pürüzsüz hareket
+function startLogoMovement(logo, speed = 2) {
+    let posX = parseFloat(logo.style.left) || 100;
+    let posY = parseFloat(logo.style.top) || 100;
+
+    const logoWidth = logo.offsetWidth || 100;
+    const logoHeight = logo.offsetHeight || 100;
+
+    let directionX = (Math.random() - 0.5) * 4;
+    let directionY = (Math.random() - 0.5) * 4;
+
+    logo.moveInterval = setInterval(() => {
+        if (!gameActive || logo.classList.contains('collected')) {
+            clearInterval(logo.moveInterval);
+            return;
         }
 
+        let nextX = posX + directionX * speed;
+        let nextY = posY + directionY * speed;
+
+        let isCollisionOrEdge = true;
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        while (isCollisionOrEdge && attempts < maxAttempts) {
+            isCollisionOrEdge = false;
+            attempts++;
+
+            const tempRect = {
+                left: nextX,
+                top: nextY,
+                right: nextX + logoWidth,
+                bottom: nextY + logoHeight
+            };
+
+            if (nextX < 0 || nextX > window.innerWidth - logoWidth) {
+                directionX *= -1;
+                isCollisionOrEdge = true;
+            }
+            if (nextY < 100 || nextY > window.innerHeight - 100) {
+                directionY *= -1;
+                isCollisionOrEdge = true;
+            }
+
+            const existingLogos = document.querySelectorAll('.logo:not(.collected)');
+            for (const other of existingLogos) {
+                if (other === logo) continue;
+
+                const otherRect = other.getBoundingClientRect();
+                if (
+                    tempRect.left < otherRect.right &&
+                    tempRect.right > otherRect.left &&
+                    tempRect.top < otherRect.bottom &&
+                    tempRect.bottom > otherRect.top
+                ) {
+                    directionX = (Math.random() - 0.5) * 4;
+                    directionY = (Math.random() - 0.5) * 4;
+                    isCollisionOrEdge = true;
+                    break;
+                }
+            }
+            if (isCollisionOrEdge) {
+                nextX = posX + directionX * speed;
+                nextY = posY + directionY * speed;
+            }
+        }
+        posX = nextX;
+        posY = nextY;
+
+        logo.style.left = posX + 'px';
+        logo.style.top = posY + 'px';
+    }, 50);
+}
+
+// ✔️ Logo toplama
+function collectLogo(logo, isClicked = true) {
+    if (!gameActive || logo.classList.contains('collected')) return;
+
+    // Eğer kullanıcı tıkladıysa puanı artır ve animasyonu ekle
+    if (isClicked) {
+        score++;
+        updateUI();
+        logo.classList.add('collected'); // Animasyon sınıfı sadece burada ekleniyor
+    }
+
+    // Zamanlayıcıyı temizle (tıklama veya otomatik silme fark etmez)
+    if (logo.removeTimer) {
+        clearTimeout(logo.removeTimer);
+    }
+
+    const cityName = logo.dataset.city;
+    if (cityName) {
+        spawnedCities.delete(cityName);
+    }
+
+    if (logo.moveInterval) {
+        clearInterval(logo.moveInterval);
+    }
+
+    // Silme işlemini gecikmeli yap (animasyon varsa çalışması için)
+    setTimeout(() => {
+        if (logo.parentNode) {
+            logo.remove();
+        }
+    }, isClicked ? 300 : 0); // Tıklama varsa animasyon için gecik, yoksa hemen sil
+}
         function updateUI() {
             document.getElementById('timer').textContent = timeLeft;
             document.getElementById('score').textContent = score;
