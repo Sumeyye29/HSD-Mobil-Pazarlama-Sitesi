@@ -838,9 +838,16 @@
 
         // Kullanıcı adı kontrolü - minimum karakter sınırı kaldırıldı
         async function checkUsername() {
-            const username = document.getElementById('usernameInput').value.trim();
+            const usernameInput = document.getElementById('usernameInput');
             const startButton = document.getElementById('startButton');
             const warningMessage = document.getElementById('warningMessage');
+            
+            if (!usernameInput || !startButton || !warningMessage) {
+                console.warn('Gerekli DOM elementleri bulunamadı');
+                return;
+            }
+            
+            const username = usernameInput.value.trim();
             
             // Kullanıcı adı boşsa: uyarıyı tamamen kapat ve metni temizle
             if (username.length === 0) {
@@ -908,17 +915,27 @@
         }
 
         // Event listener'lar
-        document.getElementById('usernameInput').addEventListener('input', () => { checkUsername() });
-        document.getElementById('usernameInput').addEventListener('keypress', async function(e) {
-            if (e.key === 'Enter' && !document.getElementById('startButton').disabled) {
-                await startGame();
-            }
-        });
+        const usernameInput = document.getElementById('usernameInput');
+        const startButton = document.getElementById('startButton');
+        
+        if (usernameInput) {
+            usernameInput.addEventListener('input', () => { checkUsername() });
+            usernameInput.addEventListener('keypress', async function(e) {
+                if (e.key === 'Enter' && startButton && !startButton.disabled) {
+                    await startGame();
+                }
+            });
+        }
 
         // Skor tablosunu güncelle
         async function updateLeaderboard() {
             const topThree = document.getElementById('topThreeModal');
             const otherPlayers = document.getElementById('otherPlayersModal');
+            
+            if (!topThree || !otherPlayers) {
+                console.error('Leaderboard elementleri bulunamadı');
+                return;
+            }
             
             // Sadece ilk 10 kişiyi göster
             const sortedScores = [...leaderboard].sort((a, b) => b.score - a.score).slice(0, 10);
@@ -1020,22 +1037,29 @@
             await refreshLeaderboardFromCloud();
             updateLeaderboard();
             const modal = document.getElementById('leaderboardModal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function hideLeaderboard() {
             const modal = document.getElementById('leaderboardModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         }
 
         // Modal dışına tıklanınca kapat
-        document.getElementById('leaderboardModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                hideLeaderboard();
-            }
-        });
+        const leaderboardModal = document.getElementById('leaderboardModal');
+        if (leaderboardModal) {
+            leaderboardModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideLeaderboard();
+                }
+            });
+        }
 
         // ESC tuşu ile modal'ı kapat
         document.addEventListener('keydown', function(e) {
@@ -1045,7 +1069,13 @@
         });
 
         async function startGame() {
-            const username = document.getElementById('usernameInput').value.trim();
+            const usernameInput = document.getElementById('usernameInput');
+            if (!usernameInput) {
+                console.error('Username input elementi bulunamadı');
+                return;
+            }
+            
+            const username = usernameInput.value.trim();
             if (username.length === 0) {
                 alert('Lütfen bir kullanıcı adı girin!');
                 return;
@@ -1076,14 +1106,29 @@
             
             currentPlayer = username;
             
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('gameUI').style.display = 'block';
-            document.getElementById('gameUIRight').style.display = 'block';
-            document.getElementById('endScreen').style.display = 'none';
+            const startScreen = document.getElementById('startScreen');
+            const gameUI = document.getElementById('gameUI');
+            const gameUIRight = document.getElementById('gameUIRight');
+            const endScreen = document.getElementById('endScreen');
+            
+            if (startScreen) startScreen.style.display = 'none';
+            if (gameUI) gameUI.style.display = 'block';
+            if (gameUIRight) gameUIRight.style.display = 'block';
+            if (endScreen) endScreen.style.display = 'none';
             
             // Show countdown
             const countdownOverlay = document.getElementById('countdownOverlay');
+            if (!countdownOverlay) {
+                console.error('Countdown overlay elementi bulunamadı');
+                return;
+            }
+            
             const countdownNumber = countdownOverlay.querySelector('.countdown-number');
+            if (!countdownNumber) {
+                console.error('Countdown number elementi bulunamadı');
+                return;
+            }
+            
             countdownOverlay.style.display = 'flex';
             
             // Start countdown animation
@@ -1131,13 +1176,21 @@
             remainingLogos.forEach(logo => logo.remove());
             
             // Ekranları gizli tut (flicker engelle)
-            document.getElementById('endScreen').style.display = 'none';
-            document.getElementById('gameUI').style.display = 'none';
-            document.getElementById('gameUIRight').style.display = 'none';
-            document.getElementById('startScreen').style.display = 'none';
+            const endScreen = document.getElementById('endScreen');
+            const gameUI = document.getElementById('gameUI');
+            const gameUIRight = document.getElementById('gameUIRight');
+            const startScreen = document.getElementById('startScreen');
+            const usernameInput = document.getElementById('usernameInput');
+            
+            if (endScreen) endScreen.style.display = 'none';
+            if (gameUI) gameUI.style.display = 'none';
+            if (gameUIRight) gameUIRight.style.display = 'none';
+            if (startScreen) startScreen.style.display = 'none';
             
             // Kullanıcı adını koruyarak input'a yaz
-            document.getElementById('usernameInput').value = currentPlayer;
+            if (usernameInput) {
+                usernameInput.value = currentPlayer;
+            }
             
             // Önce hak kontrolü yap; 3 doluysa giriş ekranını uyarı ile göster, değilse direkt başlat
             try {
@@ -1146,7 +1199,10 @@
                 const warningMessage = document.getElementById('warningMessage');
                 if (count >= 3) {
                     // Hak dolu: giriş ekranını göster ve uyarıyı yaz
-                    document.getElementById('startScreen').style.display = 'flex';
+                    const startScreen = document.getElementById('startScreen');
+                    if (startScreen) {
+                        startScreen.style.display = 'flex';
+                    }
                     if (startButton) {
                         startButton.disabled = true;
                         startButton.style.opacity = '0.6';
@@ -1223,7 +1279,14 @@
     logo.style.left = x + 'px';
     logo.style.top = y + 'px';
     logo.onclick = () => collectLogo(logo);
-    document.getElementById('gameContainer').appendChild(logo);
+    
+    const gameContainer = document.getElementById('gameContainer');
+    if (gameContainer) {
+        gameContainer.appendChild(logo);
+    } else {
+        console.error('Game container elementi bulunamadı');
+        return;
+    }
 
     startLogoMovement(logo, logoData.speed);
 
@@ -1340,8 +1403,15 @@ function collectLogo(logo, isClicked = true) {
     }, isClicked ? 300 : 0); // Tıklama varsa animasyon için gecik, yoksa hemen sil
 }
         function updateUI() {
-            document.getElementById('timer').textContent = timeLeft;
-            document.getElementById('score').textContent = score;
+            const timerElement = document.getElementById('timer');
+            const scoreElement = document.getElementById('score');
+            
+            if (timerElement) {
+                timerElement.textContent = timeLeft;
+            }
+            if (scoreElement) {
+                scoreElement.textContent = score;
+            }
         }
 
         async function endGame() {
@@ -1364,7 +1434,10 @@ function collectLogo(logo, isClicked = true) {
                 const remainingTries = Math.max(0, 3 - playCount);
                 
                 // Oyun sonu ekranını güncelle
-                document.getElementById('finalScore').textContent = score;
+                const finalScoreElement = document.getElementById('finalScore');
+                if (finalScoreElement) {
+                    finalScoreElement.textContent = score;
+                }
                 const endScreenMessage = document.querySelector('.end-screen p:first-of-type');
                 if (endScreenMessage) {
                     endScreenMessage.innerHTML = `<strong>${score} logo</strong> topladınız!`;
@@ -1392,20 +1465,27 @@ function collectLogo(logo, isClicked = true) {
                 console.error('Skor kaydı yapılamadı:', e);
             }
             
-            document.getElementById('gameUI').style.display = 'none';
-            document.getElementById('gameUIRight').style.display = 'none';
-            document.getElementById('endScreen').style.display = 'flex';
+            const gameUI = document.getElementById('gameUI');
+            const gameUIRight = document.getElementById('gameUIRight');
+            const endScreen = document.getElementById('endScreen');
+            
+            if (gameUI) gameUI.style.display = 'none';
+            if (gameUIRight) gameUIRight.style.display = 'none';
+            if (endScreen) endScreen.style.display = 'flex';
         }
 
         function exploreApp() {
             window.open('/explore.html', '_blank');
         }
 
-        document.getElementById('gameContainer').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget && gameActive) {
-                // Boş alan tıklaması - hiçbir şey yapma
-            }
-        });
+        const gameContainer = document.getElementById('gameContainer');
+        if (gameContainer) {
+            gameContainer.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget && gameActive) {
+                    // Boş alan tıklaması - hiçbir şey yapma
+                }
+            });
+        }
 
         // Sayfa yüklendiğinde
         window.addEventListener('load', () => {
@@ -1415,14 +1495,18 @@ function collectLogo(logo, isClicked = true) {
         // Inline HTML onclick handlerlari icin global olarak erisilebilir yap
         function showNotification() {
             const overlay = document.getElementById('notificationOverlay');
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            if (overlay) {
+                overlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function hideNotification() {
             const overlay = document.getElementById('notificationOverlay');
-            overlay.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            if (overlay) {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         }
 
         // ESC tuşu ile notification'ı kapat
@@ -1433,11 +1517,14 @@ function collectLogo(logo, isClicked = true) {
         });
 
         // Notification dışına tıklanınca kapat
-        document.getElementById('notificationOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                hideNotification();
-            }
-        });
+        const notificationOverlay = document.getElementById('notificationOverlay');
+        if (notificationOverlay) {
+            notificationOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideNotification();
+                }
+            });
+        }
 
         window.startGame = startGame;
         window.resetGame = resetGame;
