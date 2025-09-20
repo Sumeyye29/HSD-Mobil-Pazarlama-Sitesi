@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+       
         body {
              font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #0d1421, #1a237e, #2e2e54, #000000);
@@ -26,6 +26,8 @@
     justify-content: center;
     align-items: center;
         }
+     
+
 
         .game-container {
             width: 100%;
@@ -687,12 +689,14 @@
             
             .player-name, .player-score {
                 font-size: 0.95em;
-            }
-        }
+            } }
     </style>
 </head>
 <body>
+ 
+
     <div class="game-container" id="gameContainer">
+
         <div class="countdown-overlay" id="countdownOverlay">
             <div class="countdown-number"></div>
         </div>
@@ -761,8 +765,28 @@
                 <div class="other-players" id="otherPlayersModal"></div>
             </div>
         </div>
-    </div>
 
+
+    </div>
+   <style>
+.developer-credit {
+    position: fixed; /* ekranın her zaman altına sabitle */
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 17px;
+    color: #888;
+    z-index: 1000; /* oyun elementlerinin üstünde görünmesi için */
+}
+.team-name {
+    font-weight: bold;
+    color: #740b0b;
+}
+</style>
+
+<div class="developer-credit">
+    Bu proje <span class="team-name">HSD BANDIRMA</span> ekibi tarafından özenle geliştirilmiştir.
+</div>
     <script type="module">
         import { saveScore, getTopScores, getPlayCountByUserName, isAdmin, getGameStatus } from '/src/services/firebaseService.js'
         const hsdLogos = [
