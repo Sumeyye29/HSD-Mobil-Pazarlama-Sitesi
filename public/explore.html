@@ -1,0 +1,2137 @@
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSD - Yenilikçi Mobil Deneyim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(232, 226, 226, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #e60000;
+            text-decoration: none;
+            text-shadow: 0 0 20px rgba(230, 0, 0, 0.5);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .logo img {
+    height: 100%;
+    max-width: 200px;  /* çok genişse sınırla */
+    object-fit: contain;
+}
+
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #423a3a;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #e60000;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: #e60000;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #e60000, #cc0000);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(230, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(45deg, #cc0000, #b30000);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(230, 0, 0, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #0a0a0a 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(220,53,69,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .hero-text h1 .brand {
+            display: block;
+            font-size: 5rem;
+            background: linear-gradient(45deg, #e60000, #ffffff, #e60000, #000000);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 4s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #e60000, #cc0000);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(230, 0, 0, 0.3);
+            border: 1px solid rgba(230, 0, 0, 0.5);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(230, 0, 0, 0.4);
+            background: linear-gradient(45deg, #cc0000, #b30000);
+        }
+
+        /* Phone Mockups */
+        .phone-mockups {
+            position: relative;
+            height: 600px;
+        }
+
+        .phone {
+            position: absolute;
+            width: 280px;
+            height: 560px;
+            background: #000000;
+            border-radius: 35px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(220, 53, 69, 0.2);
+            transition: all 0.5s ease;
+            border: 2px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .phone:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 50px rgba(220, 53, 69, 0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 27px;
+            overflow: hidden;
+            background: #1a1a1a;
+            position: relative;
+        }
+
+        .phone.left {
+            left: -50px;
+            top: 80px;
+            z-index: 1;
+            transform: rotate(-8deg);
+        }
+
+        .phone.center {
+            left: 120px;
+            top: 0px;
+            z-index: 3;
+        }
+
+        .phone.right {
+            left: 290px;
+            top: 60px;
+            z-index: 2;
+            transform: rotate(8deg);
+        }
+
+        /* Screen Content */
+        .screen-content {
+            padding: 20px;
+            height: 100%;
+            background: linear-gradient(135deg, #dc3545 0%, #000000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .screen-content h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .screen-content p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #dc3545, #000000);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 120px 0;
+            background: #1a1a1a;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(220, 53, 69, 0.3);
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hexagons" width="20" height="20" patternUnits="userSpaceOnUse"><polygon points="10,2 18,7 18,13 10,18 2,13 2,7" fill="none" stroke="rgba(220,53,69,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23hexagons)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .stats-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #dc3545, #c82333);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            background: rgba(220, 53, 69, 0.1);
+            box-shadow: 0 20px 40px rgba(220, 53, 69, 0.2);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #dc3545;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+            counter-reset: number;
+            animation: countUp 2s ease-out;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-description {
+            font-size: 0.95rem;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-delay {
+            animation: floating 3s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        /* Hero Banner Section */
+        .hero-banner {
+            padding: 100px 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(26, 26, 26, 0.9)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><rect width="1000" height="1000" fill="%230a0a0a"/><circle cx="200" cy="200" r="100" fill="rgba(220,53,69,0.1)"/><circle cx="800" cy="300" r="150" fill="rgba(220,53,69,0.05)"/><circle cx="300" cy="800" r="120" fill="rgba(220,53,69,0.08)"/><circle cx="700" cy="700" r="80" fill="rgba(220,53,69,0.12)"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+
+        .banner-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .typing-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 20px rgba(220, 53, 69, 0.5);
+            min-height: 1.2em;
+        }
+
+        .typing-cursor {
+            animation: blink 1s infinite;
+            color: #dc3545;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .banner-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUpFade 1s ease forwards;
+            animation-delay: 3s;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 0;
+            background: #000;
+            position: relative;
+            min-height: 80vh;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            overflow: hidden;
+        }
+
+        .main-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* Turkey Map Section */
+        .turkey-map-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .map-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .map-container h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(220, 53, 69, 0.3);
+        }
+
+        .map-container p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .map-btn {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .map-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .map-btn:hover::before {
+            left: 100%;
+        }
+
+        .map-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(220, 53, 69, 0.3);
+        }
+
+        .map-btn.active {
+            background: linear-gradient(45deg, #000000, #1a1a1a);
+            border-color: #dc3545;
+        }
+
+        .turkey-map {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 600px;
+            background: url('harita.jpg') no-repeat center center/contain;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(220, 53, 69, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .city-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #b7bbc7, #153050);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .city-marker:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+        }
+
+        .city-marker.glow {
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(220, 53, 69, 0.8);
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .city-marker.active-high {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.6);
+        }
+
+        .city-marker.active-medium {
+            background: linear-gradient(45deg, #f0b103, #f38907);
+            color: #f1ecec;
+            box-shadow: 0 4px 15px rgba(243, 180, 7, 0.6);
+        }
+
+        .city-marker.active-low {
+            background: linear-gradient(45deg, #eedb06, #fcf806);
+            box-shadow: 0 4px 15px rgba(250, 183, 12, 0.6);
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            transform-origin: left center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+        }
+
+        .connection-line.visible {
+            opacity: 1;
+            animation: drawLine 1s ease-out forwards;
+        }
+
+        @keyframes drawLine {
+            from {
+                width: 0;
+            }
+            to {
+                width: var(--line-length);
+            }
+        }
+
+        .city-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            pointer-events: none;
+            transform: translate(50%, -100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            white-space: nowrap;
+        }
+
+        .city-marker:hover .city-tooltip {
+            opacity: 1;
+        }
+
+        .activity-legend {
+            display: none;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .activity-legend.visible {
+            display: flex;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(26, 26, 26, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .legend-color.high {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+
+        .legend-color.medium {
+            background: linear-gradient(45deg, #f38907, #cccccc);
+        }
+
+        .legend-color.low {
+            background: linear-gradient(45deg, #eedb06, #333333);
+        }
+
+        .legend-text {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
+        .stats-panel {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid rgba(220, 53, 69, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #cccccc;
+            font-weight: 600;
+        }
+
+        /* Responsive for stats */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .stat-number {
+                font-size: 2.8rem;
+            }
+            
+            .stat-card {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-text h1 .brand {
+                font-size: 3rem;
+            }
+
+            .phone-mockups {
+                height: 400px;
+            }
+
+            .phone {
+                width: 200px;
+                height: 400px;
+            }
+
+            .phone.left {
+                left: -30px;
+                top: 50px;
+            }
+
+            .phone.center {
+                left: 80px;
+                top: 0px;
+            }
+
+            .phone.right {
+                left: 190px;
+                top: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .typing-text {
+                font-size: 2.5rem;
+            }
+
+            .banner-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .video-container {
+                height: 60vh;
+            }
+
+            .map-container h2 {
+                font-size: 2rem;
+            }
+
+            .map-container p {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+
+            .map-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .map-btn {
+                width: 280px;
+                text-align: center;
+            }
+
+            .turkey-map {
+                height: 400px;
+                margin: 0 10px;
+            }
+
+            .city-marker {
+                width: 25px;
+                height: 25px;
+                font-size: 0.7rem;
+            }
+
+            .activity-legend {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Additional Dark Theme Enhancements */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #dc3545;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c82333;
+        }
+
+        /* Glow effects for enhanced dark theme */
+        .logo:hover {
+            text-shadow: 0 0 30px rgba(220, 53, 69, 0.8);
+        }
+
+        .feature-card:hover .feature-icon {
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+        }
+
+        /* Enhanced hover effects */
+        .city-marker:hover {
+            box-shadow: 0 0 30px rgba(220, 53, 69, 0.8);
+        }
+
+        .stat-card:hover .stat-number {
+            text-shadow: 0 0 20px rgba(220, 53, 69, 0.5);
+        }
+        .mini-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 225px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .mini-player.minimized {
+            height: 50px;
+        }
+
+        .mini-player video {
+            width: 100%;
+            height: calc(100% - 50px);
+            object-fit: cover;
+        }
+
+        .mini-player.minimized video {
+            display: none;
+        }
+
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+        }
+
+        .mini-player.minimized .player-controls {
+            background: #202020;
+            height: 100%;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .play-btn {
+            font-size: 18px;
+        }
+
+        .volume-btn {
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            margin: 0 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff0000;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .time-display {
+            color: white;
+            font-size: 12px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .mini-player.minimized .progress-bar,
+        .mini-player.minimized .time-display {
+            display: none;
+        }
+
+        .video-title {
+            color: white;
+            font-size: 12px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 8px;
+        }
+
+        .mini-player:not(.minimized) .video-title {
+            display: none;
+        }
+
+        .close-btn {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .exit-fullscreen-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            display: none;
+            z-index: 1001;
+            transition: background 0.2s;
+        }
+
+        .exit-fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .exit-fullscreen-btn.show {
+            display: block;
+        }
+
+        .fullscreen-btn {
+            font-size: 16px;
+        }
+
+        .toggle-btn {
+            font-size: 14px;
+        }
+
+        .volume-slider {
+            position: absolute;
+            bottom: 60px;
+            right: 80px;
+            width: 100px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .volume-slider.show {
+            display: flex;
+        }
+
+        .volume-range {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="mini-player" id="miniPlayer">
+        <video id="video" loop>
+            <source src="bilboard.mp4" type="video/mp4">
+            Tarayıcınız video etiketini desteklemiyor.
+        </video>
+        
+        <div class="player-controls">
+            <div class="video-title">Örnek Video - Demo İçerik</div>
+            
+            <button class="control-btn play-btn" id="playBtn">▶</button>
+            
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+            
+            <button class="control-btn volume-btn" id="volumeBtn">🔊</button>
+            
+            <button class="control-btn fullscreen-btn" id="fullscreenBtn">⛶</button>
+            
+            <button class="control-btn toggle-btn" id="toggleBtn">−</button>
+            
+            <button class="control-btn close-btn" id="closeBtn">×</button>
+        </div>
+
+        <div class="volume-slider" id="volumeSlider">
+            <input type="range" class="volume-range" id="volumeRange" min="0" max="100" value="100">
+        </div>
+
+        <button class="exit-fullscreen-btn" id="exitFullscreenBtn">× Tam Ekrandan Çık</button>
+    </div>
+
+    <script>
+        const miniPlayer = document.getElementById('miniPlayer');
+        const video = document.getElementById('video');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeRange = document.getElementById('volumeRange');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+
+        let isDragging = false;
+
+        // Play/Pause kontrolü
+        playBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playBtn.textContent = '⏸';
+            } else {
+                video.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        // Video tıklama ile play/pause
+        video.addEventListener('click', () => {
+            playBtn.click();
+        });
+
+        // Progress bar güncelleme
+        video.addEventListener('timeupdate', () => {
+            if (!isDragging) {
+                const progress = (video.currentTime / video.duration) * 100;
+                progressFill.style.width = progress + '%';
+            }
+            updateTimeDisplay();
+        });
+
+        // Progress bar tıklama
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            video.currentTime = percentage * video.duration;
+        });
+
+        // Ses kontrolü
+        volumeBtn.addEventListener('click', () => {
+            if (video.muted) {
+                video.muted = false;
+                volumeBtn.textContent = '🔊';
+                volumeRange.value = video.volume * 100;
+            } else {
+                video.muted = true;
+                volumeBtn.textContent = '🔇';
+                volumeRange.value = 0;
+            }
+        });
+
+        // Ses seviyesi hover
+        volumeBtn.addEventListener('mouseenter', () => {
+            volumeSlider.classList.add('show');
+        });
+
+        volumeSlider.addEventListener('mouseenter', () => {
+            volumeSlider.classList.add('show');
+        });
+
+        volumeSlider.addEventListener('mouseleave', () => {
+            volumeSlider.classList.remove('show');
+        });
+
+        volumeBtn.addEventListener('mouseleave', () => {
+            setTimeout(() => {
+                if (!volumeSlider.matches(':hover')) {
+                    volumeSlider.classList.remove('show');
+                }
+            }, 100);
+        });
+
+        // Ses seviyesi değiştirme
+        volumeRange.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            video.volume = volume;
+            video.muted = volume === 0;
+            
+            if (volume === 0) {
+                volumeBtn.textContent = '🔇';
+            } else if (volume < 0.5) {
+                volumeBtn.textContent = '🔉';
+            } else {
+                volumeBtn.textContent = '🔊';
+            }
+        });
+
+        // Tam ekran çıkış butonu
+        exitFullscreenBtn.addEventListener('click', () => {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        });
+
+        // Tam ekran
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (miniPlayer.requestFullscreen) {
+                    miniPlayer.requestFullscreen();
+                } else if (miniPlayer.webkitRequestFullscreen) {
+                    miniPlayer.webkitRequestFullscreen();
+                } else if (miniPlayer.msRequestFullscreen) {
+                    miniPlayer.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        });
+
+        // Tam ekran değişikliğini dinle
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+        function updateFullscreenButton() {
+            if (document.fullscreenElement) {
+                fullscreenBtn.textContent = '⛷';
+                exitFullscreenBtn.classList.add('show');
+                miniPlayer.style.width = '100vw';
+                miniPlayer.style.height = '100vh';
+                miniPlayer.style.borderRadius = '0';
+                // Tam ekrandayken minimize'ı kaldır
+                miniPlayer.classList.remove('minimized');
+                toggleBtn.textContent = '−';
+            } else {
+                fullscreenBtn.textContent = '⛶';
+                exitFullscreenBtn.classList.remove('show');
+                miniPlayer.style.width = '400px';
+                miniPlayer.style.height = miniPlayer.classList.contains('minimized') ? '50px' : '225px';
+                miniPlayer.style.borderRadius = '8px';
+            }
+        }
+
+        // Minimize/Maximize
+        toggleBtn.addEventListener('click', () => {
+            // Önce tam ekrandan çık
+            if (document.fullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+            
+            miniPlayer.classList.toggle('minimized');
+            toggleBtn.textContent = miniPlayer.classList.contains('minimized') ? '□' : '−';
+            
+            // Boyutları minimize durumuna göre ayarla
+            if (!document.fullscreenElement) {
+                miniPlayer.style.height = miniPlayer.classList.contains('minimized') ? '50px' : '225px';
+            }
+        });
+
+        // Kapat
+        closeBtn.addEventListener('click', () => {
+            miniPlayer.style.display = 'none';
+            video.pause();
+        });
+
+        // Zaman gösterimi
+        function updateTimeDisplay() {
+            const current = formatTime(video.currentTime);
+            const duration = formatTime(video.duration || 0);
+            timeDisplay.textContent = `${current} / ${duration}`;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Video yüklendiğinde
+        video.addEventListener('loadedmetadata', () => {
+            updateTimeDisplay();
+        });
+
+        // Video bittiğinde
+        video.addEventListener('ended', () => {
+            playBtn.textContent = '▶';
+            progressFill.style.width = '0%';
+        });
+
+        // Sürükleme başlatma
+        let startDrag = (e) => {
+            isDragging = true;
+            updateProgress(e);
+        };
+
+        // Sürükleme
+        let updateProgress = (e) => {
+            if (!isDragging) return;
+            const rect = progressBar.getBoundingClientRect();
+            const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            const percentage = x / rect.width;
+            progressFill.style.width = (percentage * 100) + '%';
+            video.currentTime = percentage * video.duration;
+        };
+
+        // Sürükleme bitirme
+        let endDrag = () => {
+            isDragging = false;
+        };
+
+        progressBar.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', updateProgress);
+        document.addEventListener('mouseup', endDrag);
+
+        // Klavye kısayolları
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                playBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo"><img src="logoo.png" alt="HSD Logo" /></a>
+                <ul class="nav-links">
+                    <li><a href="#features">Özellikler</a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li><a href="#contact">İletişim</a></li>
+                    <li><a href="#" class="nav-btn">İndir</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>
+                    <span class="brand">HSD MOBILE</span>
+                    <h1>
+                        
+                         ile her an keşfedin ve hayatınıza hız katın!
+
+                    </h1>
+                    </h1>
+                    <p>
+                       Sınırsız öğrenme, akıllı hatırlatıcılar ve kişiselleştirilmiş deneyimler… HSD Mobil'i açın ve farkı hissedin.
+                    </p>
+                    <a href="#" class="cta-button">
+                        <span>📱</span>
+                        HEMEN İNDİR
+                    </a>
+                </div>
+
+                <div class="phone-mockups">
+                    <div class="phone left floating">
+                        <div class="phone-screen">
+                            <div class="screen-content">
+                                <div class="app-icon">🎯</div>
+                                <h3>Hedef Odaklı</h3>
+                                <p>Kişiselleştirilmiş öğrenme yolculuğunuz için akıllı hedef belirleme sistemi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="phone center">
+                        <div class="phone-screen">
+                            <div class="screen-content">
+                                <div class="app-icon">HSD</div>
+                                <h3>Ana Uygulama</h3>
+                                <p>Tüm özelliklerinize tek dokunuşla erişim. Modern, hızlı ve güvenilir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="phone right floating-delay">
+                        <div class="phone-screen">
+                            <div class="screen-content">
+                                <div class="app-icon">📊</div>
+                                <h3>İlerleme Takibi</h3>
+                                <p>Detaylı analitik ve raporlarla gelişiminizi görsel olarak takip edin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-number" data-target="150000">0</div>
+                        <div class="stat-label">Aktif Kullanıcı</div>
+                        <div class="stat-description">Günlük olarak uygulamamızı kullanan kayıtlı kullanıcı sayısı</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🌟</div>
+                        <div class="stat-number" data-target="25000">0</div>
+                        <div class="stat-label">Aktif Topluluk</div>
+                        <div class="stat-description">Etkileşimde bulunan ve içerik paylaşan topluluk üyesi sayısı</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-number" data-target="4.8">0</div>
+                        <div class="stat-label">Uygulama Puanı</div>
+                        <div class="stat-description">App Store ve Google Play Store'daki ortalama kullanıcı puanımız</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Banner Section -->
+    <section class="hero-banner">
+        <div class="container">
+            <div class="banner-content">
+                <h2 class="typing-text" id="typingText"></h2>
+                <p class="banner-subtitle">Hayatınızı değiştirecek mobil deneyimi keşfedin. HSD ile sınırları aşın!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section" id="video">
+        <div class="video-container">
+            <!-- Auto-playing video -->
+            <video class="main-video" id="mainVideo" autoplay muted loop>
+                <source src="demoo.mp4.mp4" type="video/mp4">
+                <p>Tarayıcınız video oynatmayı desteklemiyor.</p>
+            </video>
+
+
+        </div>
+    </section>
+     <section class="turkey-map-section" id="map">
+        <div class="container">
+            <div class="map-container">
+                
+                <h2>HSD Türkiye Toplulukları</h2>
+                <p>Türkiye genelindeki HSD toplulukları ve aktiflik durumlarını keşfedin. Dinamik haritamız ile toplulukların birbirleriyle olan bağlantılarını görün.</p>
+                
+                <div class="map-controls">
+                    <button class="map-btn" id="connectBtn">🔗 Toplulukları Birbirine Bağla</button>
+                    <button class="map-btn" id="activityBtn">🔥 Aktiflik Durumunu Göster</button>
+                    <button class="map-btn" id="resetBtn">🔄 Sıfırla</button>
+                </div>
+
+                <div class="turkey-map">
+                    
+                       
+                             
+                        
+                        <path d="M180 280 Q220 270 260 275 Q300 270 340 280 Q380 270 420 275" 
+                              fill="none" 
+                              stroke="#bdc3c7" 
+                              stroke-width="1"/>
+                        <path d="M450 290 Q500 285 550 290 Q600 285 650 295" 
+                              fill="none" 
+                              stroke="#bdc3c7" 
+                              stroke-width="1"/>
+                        <path d="M200 320 Q300 310 400 320 Q500 310 600 325" 
+                              fill="none" 
+                              stroke="#bdc3c7" 
+                              stroke-width="1"/>
+                        
+                        <ellipse cx="200" cy="290" rx="40" ry="20" fill="#3498db" opacity="0.3"/>
+                        <path d="M300 200 Q500 180 700 200 Q800 190 850 200 Q900 210 920 230 Q850 220 700 230 Q500 240 300 220 Z" 
+                              fill="#3498db" opacity="0.3"/>
+                        <path d="M200 400 Q400 420 600 410 Q700 400 800 390 Q850 380 900 370 Q850 390 700 400 Q500 420 300 410 Q200 405 200 400 Z" 
+                              fill="#3498db" opacity="0.3"/>
+                        <ellipse cx="120" cy="350" rx="30" ry="60" fill="#3498db" opacity="0.3"/>
+                    </svg>
+
+                    <div class="city-marker" data-city="istanbul" data-activity="high" style="left: 210px; top: 176px;">
+                        HSD<div class="city-tooltip">HSD İstanbul - 15.000 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="ankara" data-activity="high" style="left: 360px; top: 247px;">
+                        HSD<div class="city-tooltip">HSD Başkent - 12.000 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="izmir" data-activity="medium" style="left: 150px; top: 340px;">
+                        HSD<div class="city-tooltip">HSD İzmir - 8.500 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="bursa" data-activity="medium" style="left: 200px; top: 230px;">
+                        HSD<div class="city-tooltip">HSD Bursa - 6.200 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="antalya" data-activity="medium" style="left: 290px; top: 410px;">
+                        HSD<div class="city-tooltip">HSD Antalya - 5.800 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="adana" data-activity="low" style="left: 495px; top: 400px;">
+                        HSD<div class="city-tooltip">HSD Adana - 4.200 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="konya" data-activity="low" style="left: 384px; top: 350px;">
+                        HSD<div class="city-tooltip">HSD Konya - 3.900 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="gaziantep" data-activity="medium" style="left: 595px; top: 410px;">
+                        HSD<div class="city-tooltip">HSD Gaziantep - 5.100 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="kayseri" data-activity="low" style="left: 520px; top: 320px;">
+                        HSD<div class="city-tooltip">HSD Kayseri - 3.600 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="trabzon" data-activity="medium" style="left: 583px; top: 190px;">
+                        HSD<div class="city-tooltip">HSD Trabzon - 4.800 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="erzurum" data-activity="low" style="left: 760px; top: 230px;">
+                        HSD<div class="city-tooltip">HSD Erzurum - 2.900 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="samsun" data-activity="medium" style="left: 520px; top: 160px;">
+                        HSD<div class="city-tooltip">HSD Samsun - 4.500 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="denizli" data-activity="low" style="left: 220px; top: 370px;">
+                        HSD<div class="city-tooltip">HSD Denizli - 3.200 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="eskisehir" data-activity="medium" style="left: 290px; top: 268px;">
+                        HSD<div class="city-tooltip">HSD Eskişehir - 4.700 üye</div>
+                    </div>
+                    <div class="city-marker" data-city="bandirma" data-activity="high" style="left: 164px; top: 231px;">
+                        HSD<div class="city-tooltip">HSD Bandırma - 13.500 üye (En Aktif!)</div>
+                    </div>
+                </div>
+
+                <div class="activity-legend" id="activityLegend">
+                    <div class="legend-item">
+                        <div class="legend-color high"></div>
+                        <div class="legend-text">Yüksek Aktiflik (10.000+ üye)</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color medium"></div>
+                        <div class="legend-text">Orta Aktiflik (4.000-9.999 üye)</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color low"></div>
+                        <div class="legend-text">Düşük Aktiflik (0-3.999 üye)</div>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalCities">15</div>
+                            <div class="stat-label">Toplam Şehir</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalMembers">89.800</div>
+                            <div class="stat-label">Toplam Üye</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="activeConnections">0</div>
+                            <div class="stat-label">Aktif Bağlantı</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="mostActive">Bandırma</div>
+                            <div class="stat-label">En Aktif Şehir</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Global variables
+        let connectionsVisible = false;
+        let activityVisible = false;
+
+        // City data
+        const cityData = {
+         istanbul: { x: 210, y: 176 },
+         ankara: { x: 360, y: 247 },   
+            izmir: { x: 150, y: 340 },
+            bursa: { x: 200, y: 230 },
+            antalya: { x: 290, y: 410 },
+            adana: { x: 495, y: 400 },
+            konya: { x: 384, y: 350 },
+            gaziantep: { x: 595, y: 410 },
+            kayseri: { x: 520, y: 320 },
+            trabzon: { x: 583, y: 190 },
+            erzurum: { x: 760, y: 230 },
+            samsun: { x: 520, y: 160 },
+            denizli: { x: 220, y: 370 },
+            eskisehir: { x: 290, y: 268 },
+            bandirma: { x: 164, y: 231 }
+        
+        };
+
+        // Connection pairs
+        const connections = [
+            ['istanbul', 'ankara'], ['istanbul', 'bursa'], ['istanbul', 'bandirma'],
+            ['ankara', 'konya'], ['ankara', 'kayseri'], ['izmir', 'bursa'],
+            ['izmir', 'denizli'], ['antalya', 'konya'], ['antalya', 'adana'],
+            ['gaziantep', 'adana'], ['trabzon', 'samsun'], ['trabzon', 'erzurum'],
+            ['samsun', 'ankara'], ['eskisehir', 'ankara'], ['eskisehir', 'bursa'],
+            ['bandirma', 'bursa']
+        ];
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sayfa yüklendi, butonlar hazırlanıyor...');
+            initializeButtons();
+            startGlowAnimation();
+        });
+
+        function initializeButtons() {
+            // Connect button
+            const connectBtn = document.getElementById('connectBtn');
+            if (connectBtn) {
+                connectBtn.onclick = function() {
+                    console.log('Bağlantı butonu çalışıyor!');
+                    toggleConnections();
+                };
+            }
+
+            // Activity button
+            const activityBtn = document.getElementById('activityBtn');
+            if (activityBtn) {
+                activityBtn.onclick = function() {
+                    console.log('Aktiflik butonu çalışıyor!');
+                    toggleActivity();
+                };
+            }
+
+            // Reset button
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.onclick = function() {
+                    console.log('Sıfırlama butonu çalışıyor!');
+                    resetMap();
+                };
+            }
+        }
+
+        function startGlowAnimation() {
+            const markers = document.querySelectorAll('.city-marker');
+            markers.forEach((marker, index) => {
+                setTimeout(() => {
+                    marker.classList.add('glow');
+                    setTimeout(() => marker.classList.remove('glow'), 2000);
+                }, index * 200);
+            });
+        }
+
+        function calculateDistance(x1, y1, x2, y2) {
+            return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        }
+
+        function calculateAngle(x1, y1, x2, y2) {
+            return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+        }
+
+        function createConnectionLine(city1, city2) {
+            const data1 = cityData[city1];
+            const data2 = cityData[city2];
+            
+            const distance = calculateDistance(data1.x, data1.y, data2.x, data2.y);
+            const angle = calculateAngle(data1.x, data1.y, data2.x, data2.y);
+            
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+            line.style.left = data1.x + 'px';
+            line.style.top = data1.y + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.setProperty('--line-length', distance + 'px');
+            
+            return line;
+        }
+
+        function updateConnectionsCounter() {
+            const count = document.querySelectorAll('.connection-line.visible').length;
+            document.getElementById('activeConnections').textContent = count;
+        }
+
+        function toggleConnections() {
+            const mapContainer = document.querySelector('.turkey-map');
+            const connectBtn = document.getElementById('connectBtn');
+            
+            if (!connectionsVisible) {
+                connections.forEach((connection, index) => {
+                    const line = createConnectionLine(connection[0], connection[1]);
+                    mapContainer.appendChild(line);
+                    
+                    setTimeout(() => {
+                        line.classList.add('visible');
+                        updateConnectionsCounter();
+                    }, index * 100);
+                });
+                
+                connectBtn.classList.add('active');
+                connectBtn.textContent = '🔗 Bağlantıları Gizle';
+                connectionsVisible = true;
+            } else {
+                const lines = document.querySelectorAll('.connection-line');
+                lines.forEach(line => line.remove());
+                
+                connectBtn.classList.remove('active');
+                connectBtn.textContent = '🔗 Toplulukları Birbirine Bağla';
+                connectionsVisible = false;
+                updateConnectionsCounter();
+            }
+        }
+
+        function toggleActivity() {
+            const markers = document.querySelectorAll('.city-marker');
+            const legend = document.getElementById('activityLegend');
+            const activityBtn = document.getElementById('activityBtn');
+            
+            if (!activityVisible) {
+                markers.forEach((marker, index) => {
+                    const activity = marker.getAttribute('data-activity');
+                    setTimeout(() => {
+                        marker.className = `city-marker active-${activity}`;
+                    }, index * 100);
+                });
+                
+                legend.classList.add('visible');
+                activityBtn.classList.add('active');
+                activityBtn.textContent = '🔥 Normal Görünüme Dön';
+                activityVisible = true;
+            } else {
+                markers.forEach(marker => {
+                    marker.className = 'city-marker';
+                });
+                
+                legend.classList.remove('visible');
+                activityBtn.classList.remove('active');
+                activityBtn.textContent = '🔥 Aktiflik Durumunu Göster';
+                activityVisible = false;
+            }
+        }
+
+        function resetMap() {
+            // Remove all connections
+            document.querySelectorAll('.connection-line').forEach(line => line.remove());
+            
+            // Reset markers
+            document.querySelectorAll('.city-marker').forEach(marker => {
+                marker.className = 'city-marker';
+            });
+            
+            // Hide legend
+            document.getElementById('activityLegend').classList.remove('visible');
+            
+            // Reset buttons
+            document.querySelectorAll('.map-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('connectBtn').textContent = '🔗 Toplulukları Birbirine Bağla';
+            document.getElementById('activityBtn').textContent = '🔥 Aktiflik Durumunu Göster';
+            
+            // Reset states
+            connectionsVisible = false;
+            activityVisible = false;
+            
+            updateConnectionsCounter();
+        }
+    </script>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Neden HSD Mobil?</h2>
+                <p>Modern teknolojinin gücüyle buluşan kullanıcı deneyimi. Her detay, sizin için düşünüldü.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Tek Çatı Altında Tüm HSD Toplulukları</h3>
+                    <p>Türkiye’nin dört bir yanındaki HSD toplulukları artık tek bir uygulamada! HSD Bandırma’nın geliştirdiği bu platform sayesinde, bulunduğun şehir fark etmeksizin tüm topluluklara ulaşabilir, yeni bağlantılar kurabilir ve ülke genelindeki HSD ailesinin bir parçası olabilirsin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Tek Tıkla Etkinlik Kaydı</h3>
+                    <p>Zaman kaybetmeden istediğin etkinliğe katıl. Tek tıkla kayıt ol, yerini ayırt ve toplulukla bir adım daha yakınlaş.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Sertifikalarım ile Başarılarını Taçlandır</h3>
+                    <p>Katıldığın etkinliklerden aldığın sertifikalar profilinde seni bekliyor. Onları kolayca paylaşabilir, CV’ni güçlendirebilir ve profesyonel imajını parlatabilirsin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Hatırlatıcılar ve Akıllı Bildirimler</h3>
+                    <p>Yaklaşan etkinlikler için e-posta ve uygulama içi bildirimlerle her zaman zamanında haberdar ol. Doğru etkinlik, doğru zamanda sana ulaşsın; sen hiçbir fırsatı kaçırma.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Akıllı Etkinlik Takvimi</h3>
+                    <p>Kendi kişisel takviminden tüm etkinlikleri takip et. Katılmak istediklerini işaretle, yaklaşanları kolayca hatırla ve programını zahmetsizce yönet.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Ayın Öne Çıkanlarıyla İlham Al</h3>
+                    <p>Her ay en başarılı üyelerimizi ve ekiplerimizi öne çıkarıyoruz.
+✨ Ayın Elçisi
+✨ Ayın Medium Yazarı (tek tıkla yazıya ulaş!)
+✨ Ayın Ekibi
+✨ Ayın Projesi
+Sen de yaptıklarınla ilham kaynağı olabilir, toplulukta parlayabilirsin!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Typing animation for hero banner
+        const phrases = [
+            "HSD ile geleceği yaşayın!",
+            "Mobil deneyimde yeni çağ başlıyor.",
+            "Sınırsız özellikler, tek uygulamada.",
+            "HSD - Hayallerinizi gerçeğe dönüştürün!"
+        ];
+        
+        let currentPhrase = 0;
+        let currentChar = 0;
+        let isDeleting = false;
+        
+        function typeWriter() {
+            const typingElement = document.getElementById('typingText');
+            const current = phrases[currentPhrase];
+            
+            if (isDeleting) {
+                typingElement.textContent = current.substring(0, currentChar - 1);
+                currentChar--;
+            } else {
+                typingElement.textContent = current.substring(0, currentChar + 1);
+                currentChar++;
+            }
+            
+            let delay = isDeleting ? 50 : 100;
+            
+            if (!isDeleting && currentChar === current.length) {
+                delay = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && currentChar === 0) {
+                isDeleting = false;
+                currentPhrase = (currentPhrase + 1) % phrases.length;
+                delay = 500;
+            }
+            
+            setTimeout(typeWriter, delay);
+        }
+        
+        // Start typing animation when page loads
+        window.addEventListener('load', function() {
+            setTimeout(typeWriter, 1000);
+        });
+
+        // Video functions
+        function toggleVideo() {
+            const video = document.getElementById('mainVideo');
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+
+        function toggleMute() {
+            const video = document.getElementById('mainVideo');
+            video.muted = !video.muted;
+        }
+
+        function toggleFullscreen() {
+            const video = document.getElementById('mainVideo');
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.mozRequestFullScreen) {
+                video.mozRequestFullScreen();
+            }
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(255, 255, 255, 0.98)';
+                nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+                nav.style.boxShadow = 'none';
+            }
+        });
+
+        // Phone hover effects
+        const phones = document.querySelectorAll('.phone');
+        phones.forEach(phone => {
+            phone.addEventListener('mouseenter', function() {
+                this.style.transform += ' scale(1.05)';
+            });
+            
+            phone.addEventListener('mouseleave', function() {
+                this.style.transform = this.style.transform.replace(' scale(1.05)', '');
+            });
+        });
+
+        // Feature cards animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Stats counter animation
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = progress * (end - start) + start;
+                
+                if (element.dataset.target.includes('.')) {
+                    element.textContent = current.toFixed(1);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Stats animation on scroll
+        const statsObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat => {
+                        const target = parseFloat(stat.dataset.target);
+                        animateValue(stat, 0, target, 2000);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+</html>
