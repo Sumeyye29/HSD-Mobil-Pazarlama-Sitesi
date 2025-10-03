@@ -424,21 +424,22 @@
 
         .logo {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             color: rgba(255,255,255,0.95);
             letter-spacing: 0.2px;
             cursor: pointer;
             transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
             z-index: 10;
-            /* Modern cam/hexagon rozet */
-            clip-path: polygon(25% 6%, 75% 6%, 94% 50%, 75% 94%, 25% 94%, 6% 50%);
+            /* Kare kart görünümü */
+            clip-path: none;
+            border-radius: 10px;
             background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -447,7 +448,8 @@
                 0 0 20px rgba(229, 57, 53, 0.3),
                 inset 0 0 20px rgba(255,255,255,0.08);
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-            animation: float 2s ease-in-out infinite, glowPulse 3s ease-in-out infinite;
+            /* Float animasyonu rotasyonla çakıştığı için kaldırıldı */
+            animation: glowPulse 3s ease-in-out infinite;
         }
 
         /* Kırmızı kenarlık */
@@ -455,7 +457,8 @@
             content: '';
             position: absolute;
             inset: -2px;
-            clip-path: polygon(25% 6%, 75% 6%, 94% 50%, 75% 94%, 25% 94%, 6% 50%);
+            clip-path: none;
+            border-radius: 12px;
             background: linear-gradient(135deg, #b71c1c, #e53935);
             filter: blur(0.6px);
             z-index: -1;
@@ -466,7 +469,8 @@
             content: '';
             position: absolute;
             inset: 4px;
-            clip-path: inherit;
+            clip-path: none;
+            border-radius: 8px;
             background: radial-gradient(120px 100px at 50% 20%, rgba(255,255,255,0.16), transparent 55%),
                         linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.1) 60%, rgba(255,255,255,0.06));
             pointer-events: none;
@@ -566,6 +570,12 @@
             justify-content: center;
         }
 
+        /* Son ekran mobilde taşabilir; kaydırma ve alt boşluk ver */
+        .end-screen {
+            overflow-y: auto;
+            padding-bottom: 140px;
+        }
+
         @keyframes glow {
             from { text-shadow: 0 0 20px rgba(255, 82, 82, 0.6); }
             to { text-shadow: 0 0 35px rgba(229, 57, 53, 0.9); }
@@ -583,8 +593,18 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Çarpma geri bildirim animasyonu */
+        .logo.impact {
+            animation: impactPulse 180ms ease;
+        }
+        @keyframes impactPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.96); }
+            100% { transform: scale(1); }
         }
 
         @keyframes collect {
@@ -730,9 +750,9 @@
             .start-screen h1 { font-size: 2em; }
             .start-screen p { font-size: 1em; }
             .game-ui { font-size: 1.2em; }
-            .logo { width: 70px;
-        height: 70px;
-        font-size: 12px; }
+            .logo { width: 60px;
+        height: 60px;
+        font-size: 11px; }
             .download-links { flex-direction: column; align-items: center; }
             .username-input {
                 min-width: 150px;
@@ -804,6 +824,10 @@
                 <button class="download-button" onclick="exploreApp()">🚀 Hadi Gel, Birlikte Göz Atalım!</button>
                 <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Skor Tablosu</button>
             </div>
+
+            <div class="developer-credit">
+                Bu proje <span class="team-name">HSD BANDIRMA</span> ekibi tarafından özenle geliştirilmiştir.
+            </div>
         </div>
 
         <!-- Notification -->
@@ -838,25 +862,21 @@
 
 
     </div>
-   <style>
+  <style>
 .developer-credit {
-    position: fixed; /* ekranın her zaman altına sabitle */
-    bottom: 10px;
+    position: static;
     width: 100%;
     text-align: center;
-    font-size: 17px;
-    color: #888;
-    z-index: 1000; /* oyun elementlerinin üstünde görünmesi için */
+    font-size: 15px;
+    color: #9e9e9e;
+    margin-top: 20px;
+    padding: 10px 0 0 0;
 }
 .team-name {
     font-weight: bold;
     color: #740b0b;
 }
 </style>
-
-<div class="developer-credit">
-    Bu proje <span class="team-name">HSD BANDIRMA</span> ekibi tarafından özenle geliştirilmiştir.
-</div>
     <script type="module">
         import { saveScore, getTopScores, getPlayCountByUserName, isAdmin, getGameStatus } from '/src/services/firebaseService.js'
         const hsdLogos = [
@@ -1320,6 +1340,8 @@
             
             // Dinamik spawn hızı için interval'ı başlat
             startDynamicSpawning();
+            // Zorluk rampasını başlat
+            startDifficultyRamp();
             
             for (let i = 0; i < 3; i++) {
                 setTimeout(spawnLogo, i * 100);
@@ -1393,31 +1415,43 @@
             
             const spawnCards = () => {
                 if (!gameActive) return;
-                
+                // Ekranda sabit 4 kart hedefi
+                const targetCount = 4;
+                const minThreshold = 2; // 2'ye inince 3 birden üret (hemen toparlar)
                 const currentActiveLogos = document.querySelectorAll('.logo').length;
-                let spawnDelay = 300; // Varsayılan hız
-                
-                // Eğer 5 veya daha az kart varsa, daha hızlı spawn et
-                if (currentActiveLogos <= 5) {
-                    spawnDelay = 150; // Çok hızlı
-                } else if (currentActiveLogos <= 8) {
-                    spawnDelay = 200; // Hızlı
-                } else if (currentActiveLogos <= 10) {
-                    spawnDelay = 250; // Normal
+
+                let batchSize = 0;
+                if (currentActiveLogos <= minThreshold) {
+                    batchSize = Math.min(3, targetCount - currentActiveLogos);
+                } else if (currentActiveLogos < targetCount) {
+                    batchSize = 1;
                 }
-                
-                spawnLogo();
-                
-                // Bir sonraki spawn için zamanla
-                setTimeout(spawnCards, spawnDelay);
+
+                for (let i = 0; i < batchSize; i++) {
+                    setTimeout(spawnLogo, i * 60);
+                }
+
+                setTimeout(spawnCards, 220); // daha sık kontrol
             };
             
             // İlk spawn'ı başlat
+            // Başlangıçta hedefe kadar hızlı doldur
+            const targetCount = 4;
+            const initialBatch = targetCount;
+            for (let i = 0; i < initialBatch; i++) {
+                setTimeout(spawnLogo, i * 80);
+            }
             spawnCards();
         }
 
        function spawnLogo() {
-    const maxActiveLogos = 12;
+    // Kart sayısını mobilde düşür
+    const isMobile = window.innerWidth <= 768;
+    // Başlangıçta daha az, sonra kademeli artış (hız çarpanına göre)
+    const speedFactor = (typeof globalSpeedMultiplier !== 'undefined' ? globalSpeedMultiplier : 1);
+    const baseCap = isMobile ? 5 : 8;
+    const dynamicAdd = speedFactor > 2.0 ? 5 : speedFactor > 1.4 ? 3 : 1;
+    const maxActiveLogos = baseCap + dynamicAdd; // mobilde 6-10, masaüstünde 9-13
     const currentActiveLogos = document.querySelectorAll('.logo').length;
     
     // Eğer maksimum kart sayısına ulaştıysak, 5 kart kaldığında yeni kart üret
@@ -1453,17 +1487,18 @@
     let x, y;
     let isColliding = true;
     let attempts = 0;
-    const logoWidth = 100;
-    const logoHeight = 100;
+    const logoWidth = (window.innerWidth <= 768) ? 60 : 90;
+    const logoHeight = (window.innerWidth <= 768) ? 60 : 90;
     const minY = 100;
     const maxY = window.innerHeight - logoHeight - 100;
 
-    while (isColliding && attempts < 50) {
+    const minGap = 18; // Kartlar arası minimum boşluk (daha geniş)
+    while (isColliding && attempts < 70) {
         isColliding = false;
         x = Math.random() * (window.innerWidth - logoWidth);
         y = Math.random() * (maxY - minY) + minY;
 
-        const newLogoRect = { left: x, top: y, right: x + logoWidth, bottom: y + logoHeight };
+        const newLogoRect = { left: x - minGap, top: y - minGap, right: x + logoWidth + minGap, bottom: y + logoHeight + minGap };
 
         const existingLogos = document.querySelectorAll('.logo:not(.collected)');
         for (const other of existingLogos) {
@@ -1502,10 +1537,11 @@
 
     startLogoMovement(logo, logoData.speed);
 
-    // Otomatik silme için 4 saniyelik zamanlayıcı
+    // Otomatik silme için süre (zorluğu artırmak için biraz kısaltıldı)
+    const lifetime = isMobile ? 3200 : 3600;
     logo.removeTimer = setTimeout(() => {
         collectLogo(logo, false); // Tıklama yok, animasyon sınıfı eklenmeyecek
-    }, 4000);
+    }, lifetime);
 }
 
 // ✔️ Çakışma önleyici ve pürüzsüz hareket
@@ -1516,70 +1552,125 @@ function startLogoMovement(logo, speed = 2) {
     const logoWidth = logo.offsetWidth || 100;
     const logoHeight = logo.offsetHeight || 100;
 
-    let directionX = (Math.random() - 0.5) * 4;
-    let directionY = (Math.random() - 0.5) * 4;
+    // Başlangıç hız vektörü (px/s)
+    // Başlangıç hızını ciddi artır
+    let velocityX = (Math.random() * 2 - 1) * 200 * (speed / 4);
+    let velocityY = (Math.random() * 2 - 1) * 200 * (speed / 4);
 
-    logo.moveInterval = setInterval(() => {
+    // Rotasyon: karelerin açısı ve açısal hızını takip et
+    let rotationDeg = 0;
+    let angularVelocity = (Math.random() * 2 - 1) * 60; // derece/s
+
+    const minY = 100;
+    const maxY = window.innerHeight - logoHeight - 100;
+    const minX = 0;
+    const maxX = window.innerWidth - logoWidth;
+
+    const damping = 0.995; // her karede çok hafif sönümleme
+    const bounceEnergy = 0.92; // duvardan sekmede enerji kaybı
+
+    let lastTime = performance.now();
+    let rafId = null;
+
+    function addImpact(fe) {
+        if (!logo.classList.contains('impact')) {
+            logo.classList.add('impact');
+            setTimeout(() => logo.classList.remove('impact'), 160);
+        }
+    }
+
+    function step(now) {
         if (!gameActive || logo.classList.contains('collected')) {
-            clearInterval(logo.moveInterval);
+            if (rafId) cancelAnimationFrame(rafId);
             return;
         }
 
-        let nextX = posX + directionX * speed;
-        let nextY = posY + directionY * speed;
+        const dt = Math.min(0.032, (now - lastTime) / 1000); // saniye
+        lastTime = now;
 
-        let isCollisionOrEdge = true;
-        let attempts = 0;
-        const maxAttempts = 10;
+        // Hızı uygula
+        // Global hız çarpanını uygula
+        const g = (typeof globalSpeedMultiplier !== 'undefined' ? globalSpeedMultiplier : 1);
+        posX += velocityX * dt * g;
+        posY += velocityY * dt * g;
 
-        while (isCollisionOrEdge && attempts < maxAttempts) {
-            isCollisionOrEdge = false;
-            attempts++;
+        let bounced = false;
 
-            const tempRect = {
-                left: nextX,
-                top: nextY,
-                right: nextX + logoWidth,
-                bottom: nextY + logoHeight
-            };
+        // Duvar çarpmaları (yumuşak sekme, sınırı kaçırdıysa geri it)
+        if (posX <= minX) {
+            posX = minX;
+            velocityX = Math.abs(velocityX) * bounceEnergy;
+            bounced = true;
+            angularVelocity += 80 * Math.sign(velocityY || 1);
+        } else if (posX >= maxX) {
+            posX = maxX;
+            velocityX = -Math.abs(velocityX) * bounceEnergy;
+            bounced = true;
+            angularVelocity -= 80 * Math.sign(velocityY || 1);
+        }
+        if (posY <= minY) {
+            posY = minY;
+            velocityY = Math.abs(velocityY) * bounceEnergy;
+            bounced = true;
+            angularVelocity += 60 * Math.sign(velocityX || 1);
+        } else if (posY >= maxY) {
+            posY = maxY;
+            velocityY = -Math.abs(velocityY) * bounceEnergy;
+            bounced = true;
+            angularVelocity -= 60 * Math.sign(velocityX || 1);
+        }
 
-            if (nextX < 0 || nextX > window.innerWidth - logoWidth) {
-                directionX *= -1;
-                isCollisionOrEdge = true;
-            }
-            if (nextY < 100 || nextY > window.innerHeight - 100) {
-                directionY *= -1;
-                isCollisionOrEdge = true;
-            }
+        if (bounced) addImpact();
 
-            const existingLogos = document.querySelectorAll('.logo:not(.collected)');
-            for (const other of existingLogos) {
-                if (other === logo) continue;
-
-                const otherRect = other.getBoundingClientRect();
-                if (
-                    tempRect.left < otherRect.right &&
-                    tempRect.right > otherRect.left &&
-                    tempRect.top < otherRect.bottom &&
-                    tempRect.bottom > otherRect.top
-                ) {
-                    directionX = (Math.random() - 0.5) * 4;
-                    directionY = (Math.random() - 0.5) * 4;
-                    isCollisionOrEdge = true;
-                    break;
-                }
-            }
-            if (isCollisionOrEdge) {
-                nextX = posX + directionX * speed;
-                nextY = posY + directionY * speed;
+        // Diğer logolarla basit çarpışma kaçınma (aşırı jitter olmadan itmeyi artır)
+        const thisRect = { left: posX, top: posY, right: posX + logoWidth, bottom: posY + logoHeight };
+        const others = document.querySelectorAll('.logo:not(.collected)');
+        for (const other of others) {
+            if (other === logo) continue;
+            const r = other.getBoundingClientRect();
+            if (
+                thisRect.left < r.right &&
+                thisRect.right > r.left &&
+                thisRect.top < r.bottom &&
+                thisRect.bottom > r.top
+            ) {
+                // Basit ayırma vektörü
+                const centerX = posX + logoWidth / 2;
+                const centerY = posY + logoHeight / 2;
+                const oCenterX = r.left + (r.right - r.left) / 2;
+                const oCenterY = r.top + (r.bottom - r.top) / 2;
+                let dx = centerX - oCenterX;
+                let dy = centerY - oCenterY;
+                if (dx === 0 && dy === 0) dx = 0.001;
+                const len = Math.hypot(dx, dy) || 1;
+                dx /= len; dy /= len;
+                // Hızlara küçük itme uygula ve pozisyonu azıcık it
+                velocityX += dx * 80;
+                velocityY += dy * 80;
+                posX += dx * 4;
+                posY += dy * 4;
+                // Açısal itme
+                angularVelocity += (dx * 120 + dy * 90);
+                addImpact();
             }
         }
-        posX = nextX;
-        posY = nextY;
 
+        // Sönümleme uygula (çok hafif)
+        velocityX *= damping;
+        velocityY *= damping;
+        angularVelocity *= 0.992;
+        rotationDeg = (rotationDeg + angularVelocity * dt) % 360;
+
+        // DOM'a yaz
         logo.style.left = posX + 'px';
         logo.style.top = posY + 'px';
-    }, 50);
+        logo.style.transform = 'rotate(' + rotationDeg.toFixed(2) + 'deg)';
+
+        rafId = requestAnimationFrame(step);
+    }
+
+    rafId = requestAnimationFrame(step);
+    logo.moveRafId = rafId;
 }
 
 // ✔️ Logo toplama
@@ -1724,6 +1815,17 @@ function collectLogo(logo, isClicked = true) {
                     // Boş alan tıklaması - hiçbir şey yapma
                 }
             });
+        }
+
+        // Global hız çarpanı: zamanla artarak zorluğu yükseltir
+        let globalSpeedMultiplier = 1;
+        function startDifficultyRamp() {
+            globalSpeedMultiplier = 1;
+            const rampInterval = setInterval(() => {
+                if (!gameActive) { clearInterval(rampInterval); return; }
+                // Çok daha hızlı ve daha yüksek tavan
+                globalSpeedMultiplier = Math.min(4.2, globalSpeedMultiplier * 1.18);
+            }, 1200);
         }
 
         // Sayfa yüklendiğinde
