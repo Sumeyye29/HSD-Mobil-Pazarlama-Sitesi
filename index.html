@@ -568,6 +568,17 @@
             color: #c5cae9;
         }
 
+        /* finalScore elementi için özel stiller */
+        #finalScore {
+            color: #ffeb3b !important;
+            font-weight: bold !important;
+            font-size: 1.2em !important;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.8) !important;
+            display: inline-block !important;
+            min-width: 20px !important;
+            text-align: center !important;
+        }
+
         .download-links {
             display: flex;
             gap: 20px;
@@ -785,7 +796,29 @@
             
             .player-name, .player-score {
                 font-size: 0.95em;
-            } }
+            }
+            
+            /* Mobilde finalScore için ek güvenlik */
+            #finalScore {
+                font-size: 1.3em !important;
+                color: #ffeb3b !important;
+                font-weight: bold !important;
+                text-shadow: 0 0 15px rgba(255, 235, 59, 1) !important;
+                display: inline-block !important;
+                min-width: 30px !important;
+                padding: 2px 5px !important;
+                background: rgba(255, 235, 59, 0.1) !important;
+                border-radius: 5px !important;
+                border: 1px solid rgba(255, 235, 59, 0.3) !important;
+            }
+            
+            /* End screen p elementleri için mobil optimizasyonu */
+            .end-screen p {
+                font-size: 1em !important;
+                line-height: 1.5 !important;
+                word-break: break-word !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -820,7 +853,7 @@
 
         <div class="end-screen" id="endScreen" style="display: none;">
             <h2>🎉 Tebrikler!</h2>
-            <p><strong><span id="finalScore">0</span> kampüs</strong> topladınız!</p>
+            <p><strong><span id="finalScore" style="color: #ffeb3b; font-weight: bold; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8); display: inline-block; min-width: 20px;">0</span> kampüs</strong> topladınız!</p>
             <p>Fakat tüm HSD topluluklarını tek başınıza toplamanız imkansızdı, değil mi? 😊</p>
             <p>İşte tam bu noktada <strong>HSD Mobil Uygulaması</strong> devreye giriyor! Uygulamamız, Türkiye'nin dört bir yanındaki HSD topluluklarını tek bir çatı altında topluyor.</p>
             <p>Sakarya'dan Marmara'ya, Ankara'dan İzmir'e kadar tüm HSD ailesi artık elinizin altında!</p>
@@ -1753,14 +1786,26 @@ function collectLogo(logo, isClicked = true) {
                 const playCount = await getPlayCountByUserName(currentPlayer);
                 const remainingTries = Math.max(0, 3 - playCount);
                 
-                // Oyun sonu ekranını güncelle
+                // Oyun sonu ekranını güncelle - güvenli DOM manipülasyonu
                 const finalScoreElement = document.getElementById('finalScore');
                 if (finalScoreElement) {
+                    // Elementin görünür olduğundan emin ol
+                    finalScoreElement.style.display = 'inline-block';
+                    finalScoreElement.style.visibility = 'visible';
+                    finalScoreElement.style.opacity = '1';
                     finalScoreElement.textContent = score;
+                    
+                    // Ekstra güvenlik için innerHTML ile de deneyelim
+                    finalScoreElement.innerHTML = `<span style="color: #ffeb3b; font-weight: bold; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span>`;
+                    
+                    console.log('Final score updated:', score, finalScoreElement.textContent);
+                } else {
+                    console.error('finalScore element bulunamadı!');
                 }
+                
                 const endScreenMessage = document.querySelector('.end-screen p:first-of-type');
                 if (endScreenMessage) {
-                    endScreenMessage.innerHTML = `<strong>${score} logo</strong> topladınız!`;
+                    endScreenMessage.innerHTML = `<strong><span style="color: #ffeb3b; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span> logo</strong> topladınız!`;
                 }
                 
                 // Oyun hakkı bilgisini ayrı bir div'e ekle
@@ -1809,7 +1854,25 @@ function collectLogo(logo, isClicked = true) {
             
             if (gameUI) gameUI.style.display = 'none';
             if (gameUIRight) gameUIRight.style.display = 'none';
-            if (endScreen) endScreen.style.display = 'flex';
+            
+            // End screen gösterilmeden önce skor güncellemesini tekrar kontrol et
+            if (endScreen) {
+                const finalScoreCheck = document.getElementById('finalScore');
+                if (finalScoreCheck && (!finalScoreCheck.textContent || finalScoreCheck.textContent === '0')) {
+                    finalScoreCheck.innerHTML = `<span style="color: #ffeb3b; font-weight: bold; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span>`;
+                    console.log('Final score re-check and update:', score);
+                }
+                endScreen.style.display = 'flex';
+                
+                // Ekstra güvenlik: end screen gösterildikten sonra da skor kontrolü
+                setTimeout(() => {
+                    const finalScoreAfterShow = document.getElementById('finalScore');
+                    if (finalScoreAfterShow && (!finalScoreAfterShow.textContent || finalScoreAfterShow.textContent === '0')) {
+                        finalScoreAfterShow.innerHTML = `<span style="color: #ffeb3b; font-weight: bold; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span>`;
+                        console.log('Final score post-show update:', score);
+                    }
+                }, 100);
+            }
         }
 
         function exploreApp() {
