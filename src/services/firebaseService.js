@@ -32,17 +32,18 @@ export const saveScore = async (userName, score) => {
 // En yüksek skorları getir
 export const getTopScores = async (limitCount = 10) => {
   try {
+    // Tüm skorları al (limit olmadan) - her kullanıcının en yüksek skorunu bulmak için
     const querySnapshot = await getDocs(
       query(
         collection(db, SCORES_COLLECTION),
-        orderBy('score', 'desc'),
-        limit(limitCount) // sadece Firestore limit
+        orderBy('score', 'desc')
       )
     );
 
     const userHighScores = {};
     querySnapshot.forEach((docSnap) => {
       const data = docSnap.data();
+      // Her kullanıcı için sadece en yüksek skoru tut
       if (
         !userHighScores[data.userName] ||
         data.score > userHighScores[data.userName].score
@@ -56,7 +57,10 @@ export const getTopScores = async (limitCount = 10) => {
       }
     });
 
-    const scores = Object.values(userHighScores).sort((a, b) => b.score - a.score);
+    // Kullanıcıların en yüksek skorlarını sırala ve istenen sayıda döndür
+    const scores = Object.values(userHighScores)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limitCount);
 
     console.log('Skorlar başarıyla alındı:', scores.length);
     return scores;
@@ -93,6 +97,42 @@ export const getPlayCountByUserName = async (userName) => {
       console.error('Yedek sayım da başarısız:', e);
       return 0;
     }
+  }
+};
+
+// Kullanıcının en yüksek skorunu getir
+export const getUserHighestScore = async (userName) => {
+  try {
+    const normalizedName = (userName || '').trim();
+    if (!normalizedName) {
+      return null;
+    }
+
+    const userScoresQuery = query(
+      collection(db, SCORES_COLLECTION),
+      where('userName', '==', normalizedName),
+      orderBy('score', 'desc'),
+      limit(1)
+    );
+    
+    const querySnapshot = await getDocs(userScoresQuery);
+    
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    
+    return {
+      id: doc.id,
+      userName: data.userName,
+      score: data.score,
+      createdAt: data.createdAt
+    };
+  } catch (error) {
+    console.error('Kullanıcı en yüksek skor alma hatası:', error);
+    return null;
   }
 };
 
