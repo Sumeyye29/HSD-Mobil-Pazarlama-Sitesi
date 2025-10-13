@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSD Logo Oyunu - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .status-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .status-dot.active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-dot.inactive {
+            background: #f44336;
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+        }
+
+        .toggle-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .toggle-button.active {
+            background: #f44336;
+        }
+
+        .toggle-button.inactive {
+            background: #4CAF50;
+        }
+
+        .toggle-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+    </style>
+    <script type="module">
+        // Vite entry noktası: buradan import çalışır (public altında çalışmaz)
+        import { getGameStatus, setGameStatus } from '/src/services/firebaseService.js';
+
+        const onReady = () => {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const toggleButton = document.getElementById('toggleButton');
+            const errorMessage = document.getElementById('errorMessage');
+
+            async function updateUI(isActive) {
+                statusDot.className = `status-dot ${isActive ? 'active' : 'inactive'}`;
+                statusText.textContent = isActive ? 'Oyun Aktif' : 'Oyun Kapalı';
+                toggleButton.textContent = isActive ? 'Oyunu Kapat' : 'Oyunu Aç';
+                toggleButton.className = `toggle-button ${isActive ? 'active' : 'inactive'}`;
+                toggleButton.disabled = false;
+            }
+
+            async function toggleGameStatus() {
+                try {
+                    toggleButton.disabled = true;
+                    const currentStatus = await getGameStatus();
+                    await setGameStatus(!currentStatus);
+                    await updateUI(!currentStatus);
+                    errorMessage.style.display = 'none';
+                } catch (error) {
+                    console.error('Oyun durumu değiştirilemedi:', error);
+                    errorMessage.textContent = 'Oyun durumu değiştirilirken bir hata oluştu. Lütfen tekrar deneyin.';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    toggleButton.disabled = false;
+                }
+            }
+
+            async function initialize() {
+                try {
+                    // İlk durumda butonu kilitle, UI metinlerini "Yükleniyor"da bırak
+                    toggleButton.disabled = true;
+                    const isActive = await getGameStatus();
+                    await updateUI(isActive);
+                } catch (error) {
+                    console.error('Oyun durumu alınamadı:', error);
+                    errorMessage.textContent = 'Oyun durumu alınamadı. Lütfen sayfayı yenileyin.';
+                    errorMessage.style.display = 'block';
+                }
+            }
+
+            toggleButton.addEventListener('click', toggleGameStatus);
+            initialize();
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', onReady);
+        } else {
+            onReady();
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-panel">
+        <div class="header">
+            <h1>HSD Logo Oyunu</h1>
+            <p>Admin Panel</p>
+        </div>
+
+        <div class="status-section">
+            <div class="status-indicator">
+                <div id="statusDot" class="status-dot"></div>
+                <span id="statusText">Durum yükleniyor...</span>
+            </div>
+            <button id="toggleButton" class="toggle-button" disabled>Yükleniyor...</button>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        
+        <a href="/" class="back-link">← Ana Sayfaya Dön</a>
+    </div>
+</body>
+</html>
+
+

@@ -1016,7 +1016,8 @@
         // Veri yükleme fonksiyonları
         async function loadData() {
             try {
-                const scores = await getTopScores(10);
+                // Daha geniş veri seti al ki sıralama doğru hesaplanabilsin
+                const scores = await getTopScores(100);
                 leaderboard = scores.map(s => ({ name: s.userName, score: s.score }));
             } catch (e) {
                 console.error('Cloud skorları alınamadı, local veriye düşülüyor:', e);
@@ -1040,7 +1041,8 @@
 
         async function refreshLeaderboardFromCloud() {
             try {
-                const scores = await getTopScores(10);
+                // Daha geniş veri seti al ki sıralama doğru hesaplanabilsin
+                const scores = await getTopScores(100);
                 leaderboard = scores.map(s => ({ name: s.userName, score: s.score }));
             } catch (e) {
                 console.error('Skor tablosu yenilenemedi:', e);
@@ -1154,18 +1156,32 @@
                 return;
             }
             
-            // Sadece ilk 10 kişiyi göster
-            const sortedScores = [...leaderboard].sort((a, b) => b.score - a.score).slice(0, 10);
+            // Tüm skorları sırala (sadece ilk 10'u göstermek için değil, sıralama pozisyonu için)
+            const allSortedScores = [...leaderboard].sort((a, b) => b.score - a.score);
+            const topTenScores = allSortedScores.slice(0, 10);
             
-            // Mevcut oyuncunun son oyun bilgilerini al
+            // Mevcut oyuncunun bilgilerini al
             let currentPlayerInfo = null;
+            let currentPlayerHighestScore = null;
+            let currentPlayerRank = -1;
+            
             if (currentPlayer) {
                 try {
                     const playCount = await getPlayCountByUserName(currentPlayer);
+                    // highest score ve rank'ı mevcut listeden hesapla
+                    const playerEntries = allSortedScores.filter(p => p.name.toLowerCase() === currentPlayer.toLowerCase());
+                    const highest = playerEntries.length > 0 ? Math.max(...playerEntries.map(p => p.score)) : 0;
+                    const rankIndex = allSortedScores.findIndex(p => p.name.toLowerCase() === currentPlayer.toLowerCase() && p.score === highest);
+                    currentPlayerRank = rankIndex >= 0 ? rankIndex + 1 : -1;
+
+                    currentPlayerHighestScore = highest;
+
                     currentPlayerInfo = {
                         playCount,
-                        currentScore: score,
-                        remainingTries: Math.max(0, 3 - playCount)
+                        highestScore: currentPlayerHighestScore,
+                        currentGameScore: score,
+                        remainingTries: Math.max(0, 3 - playCount),
+                        rank: currentPlayerRank
                     };
                 } catch (e) {
                     console.error('Oyuncu bilgileri alınamadı:', e);
@@ -1176,8 +1192,9 @@
             const medals = ['🥇', '🥈', '🥉'];
             const classes = ['first', 'second', 'third'];
             
-            for (let i = 0; i < Math.min(3, sortedScores.length); i++) {
-                const player = sortedScores[i];
+            // İlk 3'ü göster
+            for (let i = 0; i < Math.min(3, topTenScores.length); i++) {
+                const player = topTenScores[i];
                 const playerDiv = document.createElement('div');
                 let playerClass = `top-player ${classes[i]}`;
                 
@@ -1191,14 +1208,15 @@
                     <span class="medal">${medals[i]}</span>
                     <span class="player-name">${player.name}</span>
                     <span class="player-score">${player.score}</span>
-                    ${isCurrentPlayer ? `<span class="current-user-indicator">SEN</span>` : ''}
+                    ${isCurrentPlayer ? `<span class="current-user-indicator">SEN (${i + 1}.)</span>` : ''}
                 `;
                 topThree.appendChild(playerDiv);
             }
             
+            // 4-10 arası oyuncuları göster
             otherPlayers.innerHTML = '';
-            for (let i = 3; i < Math.min(10, sortedScores.length); i++) {
-                const player = sortedScores[i];
+            for (let i = 3; i < Math.min(10, topTenScores.length); i++) {
+                const player = topTenScores[i];
                 const playerDiv = document.createElement('div');
                 let playerClass = 'regular-player';
                 
@@ -1218,17 +1236,36 @@
                 otherPlayers.appendChild(playerDiv);
             }
             
-            // Eğer oyuncu skor tablosunda değilse ve aktif bir oyun varsa, mevcut skoru göster
-            if (currentPlayerInfo && currentPlayerInfo.currentScore > 0 && 
-                !sortedScores.some(s => s.name.toLowerCase() === currentPlayer.toLowerCase())) {
+            // Eğer oyuncu top 10'da değilse ama skoru varsa, ayrı olarak göster
+            if (currentPlayerInfo && currentPlayerInfo.highestScore > 0 && 
+                !topTenScores.some(s => s.name.toLowerCase() === currentPlayer.toLowerCase())) {
                 const currentPlayerDiv = document.createElement('div');
                 currentPlayerDiv.className = 'regular-player current-user';
+                currentPlayerDiv.style.borderTop = '2px solid #ffeb3b';
+                currentPlayerDiv.style.marginTop = '10px';
+                currentPlayerDiv.innerHTML = `
+                    <span class="player-rank">${currentPlayerInfo.rank > 0 ? currentPlayerInfo.rank + '.' : '-'}</span>
+                    <span class="player-name">${currentPlayer}</span>
+                    <span class="player-score">${currentPlayerInfo.highestScore}</span>
+                    <span class="current-user-indicator">
+                        SEN (EN YÜKSEK)
+                    </span>
+                `;
+                otherPlayers.appendChild(currentPlayerDiv);
+            }
+            
+            // Eğer kullanıcının hiç skoru yoksa ama oyun oynuyorsa, mevcut oyun skorunu göster
+            if (currentPlayerInfo && currentPlayerInfo.highestScore === 0 && currentPlayerInfo.currentGameScore > 0) {
+                const currentPlayerDiv = document.createElement('div');
+                currentPlayerDiv.className = 'regular-player current-user';
+                currentPlayerDiv.style.borderTop = '2px solid #ffeb3b';
+                currentPlayerDiv.style.marginTop = '10px';
                 currentPlayerDiv.innerHTML = `
                     <span class="player-rank">-</span>
                     <span class="player-name">${currentPlayer}</span>
-                    <span class="player-score">${currentPlayerInfo.currentScore}</span>
+                    <span class="player-score">${currentPlayerInfo.currentGameScore}</span>
                     <span class="current-user-indicator">
-                        SON SKORUN
+                        MEVCUT OYUN
                     </span>
                 `;
                 otherPlayers.appendChild(currentPlayerDiv);
@@ -1382,7 +1419,9 @@
             // Zorluk rampasını başlat
             startDifficultyRamp();
             
-            for (let i = 0; i < 3; i++) {
+        const isMobileAtStart = window.innerWidth <= 768;
+            const initialSpawns = isMobileAtStart ? 2 : 3;
+            for (let i = 0; i < initialSpawns; i++) {
                 setTimeout(spawnLogo, i * 100);
             }
         }
@@ -1454,9 +1493,10 @@
             
             const spawnCards = () => {
                 if (!gameActive) return;
-                // Ekranda sabit 4 kart hedefi
-                const targetCount = 4;
-                const minThreshold = 2; // 2'ye inince 3 birden üret (hemen toparlar)
+                const isMobile = window.innerWidth <= 768;
+                // Hedefi mobilde azalt
+                const targetCount = isMobile ? 3 : 4;
+                const minThreshold = isMobile ? 1 : 2; // mobilde daha erken takviye
                 const currentActiveLogos = document.querySelectorAll('.logo').length;
 
                 let batchSize = 0;
@@ -1470,15 +1510,16 @@
                     setTimeout(spawnLogo, i * 60);
                 }
 
-                setTimeout(spawnCards, 220); // daha sık kontrol
+                setTimeout(spawnCards, isMobile ? 300 : 220); // mobilde daha sakin kontrol
             };
             
             // İlk spawn'ı başlat
             // Başlangıçta hedefe kadar hızlı doldur
-            const targetCount = 4;
+            const isMobile = window.innerWidth <= 768;
+            const targetCount = isMobile ? 3 : 4;
             const initialBatch = targetCount;
             for (let i = 0; i < initialBatch; i++) {
-                setTimeout(spawnLogo, i * 80);
+                setTimeout(spawnLogo, i * (isMobile ? 120 : 80));
             }
             spawnCards();
         }
@@ -1488,9 +1529,9 @@
     const isMobile = window.innerWidth <= 768;
     // Başlangıçta daha az, sonra kademeli artış (hız çarpanına göre)
     const speedFactor = (typeof globalSpeedMultiplier !== 'undefined' ? globalSpeedMultiplier : 1);
-    const baseCap = isMobile ? 5 : 8;
-    const dynamicAdd = speedFactor > 2.0 ? 5 : speedFactor > 1.4 ? 3 : 1;
-    const maxActiveLogos = baseCap + dynamicAdd; // mobilde 6-10, masaüstünde 9-13
+    const baseCap = isMobile ? 3 : 6; // mobilde daha az kart
+    const dynamicAdd = speedFactor > 2.0 ? 3 : (speedFactor > 1.4 ? 2 : 0);
+    const maxActiveLogos = baseCap + dynamicAdd; // mobilde 3-6, masaüstünde 6-9
     const currentActiveLogos = document.querySelectorAll('.logo').length;
     
     // Eğer maksimum kart sayısına ulaştıysak, 5 kart kaldığında yeni kart üret
@@ -1526,8 +1567,8 @@
     let x, y;
     let isColliding = true;
     let attempts = 0;
-    const logoWidth = (window.innerWidth <= 768) ? 60 : 90;
-    const logoHeight = (window.innerWidth <= 768) ? 60 : 90;
+    const logoWidth = (window.innerWidth <= 768) ? 66 : 98; // hafif büyütme
+    const logoHeight = (window.innerWidth <= 768) ? 66 : 98; // hafif büyütme
     const minY = 100;
     const maxY = window.innerHeight - logoHeight - 100;
 
@@ -1579,7 +1620,7 @@
     startLogoMovement(logo, logoData.speed);
 
     // Otomatik silme için süre (zorluğu artırmak için biraz kısaltıldı)
-    const lifetime = isMobile ? 3200 : 3600;
+    const lifetime = isMobile ? 4200 : 3800; // mobilde biraz daha uzun
     logo.removeTimer = setTimeout(() => {
         collectLogo(logo, false); // Tıklama yok, animasyon sınıfı eklenmeyecek
     }, lifetime);
@@ -1595,8 +1636,10 @@ function startLogoMovement(logo, speed = 2) {
 
     // Başlangıç hız vektörü (px/s)
     // Başlangıç hızını ciddi artır
-    let velocityX = (Math.random() * 2 - 1) * 200 * (speed / 4);
-    let velocityY = (Math.random() * 2 - 1) * 200 * (speed / 4);
+    const isMobile = window.innerWidth <= 768;
+    const mobileSpeedScale = isMobile ? 0.55 : 1;
+    let velocityX = (Math.random() * 2 - 1) * 200 * (speed / 4) * mobileSpeedScale;
+    let velocityY = (Math.random() * 2 - 1) * 200 * (speed / 4) * mobileSpeedScale;
 
     // Rotasyon: karelerin açısı ve açısal hızını takip et
     let rotationDeg = 0;
@@ -1608,7 +1651,7 @@ function startLogoMovement(logo, speed = 2) {
     const maxX = window.innerWidth - logoWidth;
 
     const damping = 0.995; // her karede çok hafif sönümleme
-    const bounceEnergy = 0.92; // duvardan sekmede enerji kaybı
+    const bounceEnergy = isMobile ? 0.85 : 0.9; // duvardan sekmede daha fazla enerji kaybı (mobilde daha yumuşak)
 
     let lastTime = performance.now();
     let rafId = null;
@@ -1631,7 +1674,8 @@ function startLogoMovement(logo, speed = 2) {
 
         // Hızı uygula
         // Global hız çarpanını uygula
-        const g = (typeof globalSpeedMultiplier !== 'undefined' ? globalSpeedMultiplier : 1);
+        const baseG = (typeof globalSpeedMultiplier !== 'undefined' ? globalSpeedMultiplier : 1);
+        const g = isMobile ? baseG * 0.8 : baseG; // mobilde daha sakin
         posX += velocityX * dt * g;
         posY += velocityY * dt * g;
 
@@ -1642,23 +1686,27 @@ function startLogoMovement(logo, speed = 2) {
             posX = minX;
             velocityX = Math.abs(velocityX) * bounceEnergy;
             bounced = true;
-            angularVelocity += 80 * Math.sign(velocityY || 1);
+            angularVelocity += 50 * Math.sign(velocityY || 1);
+            velocityY *= 0.95; // köşede hızlanma hissini azalt
         } else if (posX >= maxX) {
             posX = maxX;
             velocityX = -Math.abs(velocityX) * bounceEnergy;
             bounced = true;
-            angularVelocity -= 80 * Math.sign(velocityY || 1);
+            angularVelocity -= 50 * Math.sign(velocityY || 1);
+            velocityY *= 0.95;
         }
         if (posY <= minY) {
             posY = minY;
             velocityY = Math.abs(velocityY) * bounceEnergy;
             bounced = true;
-            angularVelocity += 60 * Math.sign(velocityX || 1);
+            angularVelocity += 40 * Math.sign(velocityX || 1);
+            velocityX *= 0.95;
         } else if (posY >= maxY) {
             posY = maxY;
             velocityY = -Math.abs(velocityY) * bounceEnergy;
             bounced = true;
-            angularVelocity -= 60 * Math.sign(velocityX || 1);
+            angularVelocity -= 40 * Math.sign(velocityX || 1);
+            velocityX *= 0.95;
         }
 
         if (bounced) addImpact();
@@ -1685,13 +1733,13 @@ function startLogoMovement(logo, speed = 2) {
                 if (dx === 0 && dy === 0) dx = 0.001;
                 const len = Math.hypot(dx, dy) || 1;
                 dx /= len; dy /= len;
-                // Hızlara küçük itme uygula ve pozisyonu azıcık it
-                velocityX += dx * 80;
-                velocityY += dy * 80;
-                posX += dx * 4;
-                posY += dy * 4;
-                // Açısal itme
-                angularVelocity += (dx * 120 + dy * 90);
+                // Hızlara daha küçük itme uygula ve pozisyonu daha az it
+                velocityX += dx * 40;
+                velocityY += dy * 40;
+                posX += dx * 2;
+                posY += dy * 2;
+                // Açısal itme azaltıldı
+                angularVelocity += (dx * 80 + dy * 60);
                 addImpact();
             }
         }
@@ -1700,6 +1748,15 @@ function startLogoMovement(logo, speed = 2) {
         velocityX *= damping;
         velocityY *= damping;
         angularVelocity *= 0.992;
+
+        // Maksimum hız limiti (mobilde daha düşük)
+        const maxSpeed = isMobile ? 180 : 240; // px/s
+        const speedNow = Math.hypot(velocityX, velocityY);
+        if (speedNow > maxSpeed) {
+            const scale = maxSpeed / (speedNow || 1);
+            velocityX *= scale;
+            velocityY *= scale;
+        }
         rotationDeg = (rotationDeg + angularVelocity * dt) % 360;
 
         // DOM'a yaz
@@ -1717,6 +1774,10 @@ function startLogoMovement(logo, speed = 2) {
 // ✔️ Logo toplama
 function collectLogo(logo, isClicked = true) {
     if (!gameActive || logo.classList.contains('collected')) return;
+    // Tek tıkı garanti altına almak için kısa debounce
+    if (logo._clicked) return;
+    logo._clicked = true;
+    setTimeout(() => { logo._clicked = false; }, 350);
 
     // Eğer kullanıcı tıkladıysa puanı artır ve animasyonu ekle
     if (isClicked) {
@@ -1805,7 +1866,7 @@ function collectLogo(logo, isClicked = true) {
                 
                 const endScreenMessage = document.querySelector('.end-screen p:first-of-type');
                 if (endScreenMessage) {
-                    endScreenMessage.innerHTML = `<strong><span style="color: #ffeb3b; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span> logo</strong> topladınız!`;
+                    endScreenMessage.innerHTML = `<strong><span style="color: #ffeb3b; text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);">${score}</span> kampüs</strong> topladınız!`;
                 }
                 
                 // Oyun hakkı bilgisini ayrı bir div'e ekle
