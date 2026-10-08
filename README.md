@@ -2,6 +2,8 @@
 
 > HSD Mobil Uygulamasını tanıtmak, stand günlerinde üye katılımını artırmak ve oyunlaştırma (gamification) ile etkileşim yaratmak amacıyla geliştirilmiş pazarlama ve mini oyun projesi.
 
+Canlı Proje: https://hsd-logo-game-vert.vercel.app/
+
 ---
 
 ## 📌 Proje Hakkında
